@@ -1,0 +1,18 @@
+/* ===== Navigation - séparateur visuel léger ===== */
+.navbar {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Bouton recherche - bleu nuit du body */
+.btn-search {
+    background-color: #0f2537;
+    color: #ffffff;
+    border: 1px solid #0f2537;
+}
+
+.btn-search:hover {
+    background-color: #1a3a5c;
+    color: #ffffff;
+    border-color: #1a3a5c;
+}

@@ -1,0 +1,40 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        {# Logo cliquable - retour boutique #}
+        <a href="#" class="navbar-brand d-flex align-items-center">
+            <img src="{{ asset('image/logo.png') }}" alt="Esprit déco" height="30" class="me-2">
+        </a>
+
+        {# Bouton hamburger pour mobile #}
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent" aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-list fs-2"></i>
+        </button>
+
+        {# Contenu rétractable #}
+        <div class="collapse navbar-collapse" id="navContent">
+            {# Menu principal à gauche #}
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Boutique</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Connexion
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Connexion</a></li>
+                        <li><a class="dropdown-item" href="#">Enregistrement</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            {# Barre de recherche à droite #}
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Recherche" aria-label="Recherche">
+                <button class="btn btn-search" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>

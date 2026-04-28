@@ -1,0 +1,14 @@
+/* ===== Footer ===== */
+footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Footer - texte raccord avec la navbar ===== */
+footer,
+footer a {
+    color: #4e5d6c;
+}
+
+footer img {
+    max-height: 40px;
+}
