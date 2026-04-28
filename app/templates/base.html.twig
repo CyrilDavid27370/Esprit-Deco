@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Accueil Esprit Déco!{% endblock %}</title>
+        <title>{% block title %}Esprit Déco{% endblock %}</title>
         <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -15,6 +15,20 @@
         {% endblock %}
     </head>
     <body>
+        <body class="d-flex flex-column min-vh-100">
+
+        {% include '_shared/_header.html.twig' %}
+        {% include '_shared/_nav.html.twig' %}
+
+        <main class="flex-grow-1 py-4"">
+            <div class="container">
+                <p class="text-center">BLOC MAIN</p>
+            </div>
+        </main>
+
+        {% include '_shared/_footer.html.twig' %}
+
+        </body>
         {% block body %}{% endblock %}
     </body>
 </html>
