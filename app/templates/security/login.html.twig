@@ -3,16 +3,9 @@
 {% block title %}Connexion - EspritDéco{% endblock %}
 
 {% block body %}
-    <h1>Connexion</h1>
+    {% if not app.user %}
+        <h1>Connexion</h1>
 
-    {% if app.user %}
-        {# Si déjà connecté #}
-        <div class="alert alert-info">
-            Vous êtes déjà connecté en tant que <strong>{{ app.user.userIdentifier }}</strong>.
-            <a href="{{ path('app_logout') }}" class="btn btn-primary ms-2 text-decoration-none">Déconnexion</a>
-        </div>
-    {% else %}
-        {# Si pas connecté, afficher le formulaire #}
         {% if error %}
             <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
         {% endif %}
