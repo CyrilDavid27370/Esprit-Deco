@@ -1,0 +1,45 @@
+/* ===== Carte Produit "pas d'image" ===== */
+.no-image {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 5rem;
+    background-color: var(--bs-tertiary-bg);
+}
+
+/* ===== Image principale - hauteur fixe pour uniformité ===== */
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* ===== Footer de la carte : catégorie + prix ===== */
+.card-meta {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ===== Badges (catégorie + prix) - forme rectangulaire ===== */
+.card-meta .badge {
+    border-radius: 20px;
+    padding: 0.5rem 2rem;
+    font-size: 1rem;
+}
+
+/* ===== Badge prix ===== */
+.price-badge {
+    background-color: var(--bs-primary);
+    color: #fff;
+}
+
+/* À partir de tablette : passer sur une ligne */
+@media (min-width: 768px) {
+    .card-meta {
+        flex-direction: row;
+    }
+}
