@@ -2,7 +2,7 @@
     <div class="container-fluid">
         {# Logo cliquable - retour boutique #}
         <a href="#" class="navbar-brand d-flex align-items-center">
-            <img src="{{ asset('image/logo.png') }}" alt="Esprit déco" height="30" class="me-2">
+            <img src="{{ asset('image/layout/logo.png') }}" alt="Esprit déco" height="30" class="me-2">
         </a>
 
         {# Bouton hamburger pour mobile #}
@@ -13,19 +13,33 @@
         {# Contenu rétractable #}
         <div class="collapse navbar-collapse" id="navContent">
             {# Menu principal à gauche #}
-            <ul class="navbar-nav me-auto">
+            <ul class="navbar-nav me-auto align-items-center">
                 <li class="nav-item">
                     <a class="nav-link" href="#">Boutique</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Connexion
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Connexion</a></li>
-                        <li><a class="dropdown-item" href="#">Enregistrement</a></li>
-                    </ul>
-                </li>
+
+                {% if app.user %}
+                    {# === Utilisateur connecté : email + bouton déconnexion alignés === #}
+                    <li class="nav-item d-flex align-items-center gap-2">
+                        <span class="nav-link">
+                            <i class="bi bi-person-circle"></i> {{ app.user.email }}
+                        </span>
+                        <a class="btn btn-primary btn-sm" href="{{ path('app_logout') }}">
+                            <i class="bi bi-box-arrow-right"></i> Déconnexion
+                        </a>
+                    </li>
+                {% else %}
+                    {# === Utilisateur non connecté : dropdown Connexion / Enregistrement === #}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Connexion
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ path('app_login') }}">Connexion</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_register') }}">Enregistrement</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
             </ul>
 
             {# Barre de recherche à droite #}

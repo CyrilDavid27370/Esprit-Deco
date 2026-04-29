@@ -3,7 +3,7 @@
 
 /* ===== Header avec image de fond ===== */
 .header-banner {
-    background-image: url('/image/header.webp');
+    background-image: url('/image/layout/header.webp');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
