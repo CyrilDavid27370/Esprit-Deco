@@ -8,11 +8,11 @@ use Doctrine\Persistence\ObjectManager;
 
 class CategoryFixtures extends Fixture
 {
-    public const CATEGORY_TEXTILE = "category-textile";
-    public const CATEGORY_LUMIERE = "category-lumiere";
-    public const CATEGORY_MURAL = "category-mural";
-    public const CATEGORY_DECOR = "category-decor";
-    public const CATEGORY_PRATIQUE = "category-pratique";
+    public const CATEGORY_TEXTILE = 'category-textile';
+    public const CATEGORY_LUMIERE = 'category-lumiere';
+    public const CATEGORY_MURAL = 'category-mural';
+    public const CATEGORY_DECOR = 'category-decor';
+    public const CATEGORY_PRATIQUE = 'category-pratique';
 
     public function load(ObjectManager $manager): void
     {
@@ -30,10 +30,9 @@ class CategoryFixtures extends Fixture
             $category->setColor($data['color']);
 
             $manager->persist($category);
-
             $this->addReference($data['ref'], $category);
         }
 
-            $manager->flush();
+        $manager->flush();
     }
 }

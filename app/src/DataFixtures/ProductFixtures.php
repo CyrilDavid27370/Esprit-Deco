@@ -10,7 +10,6 @@ use Doctrine\Persistence\ObjectManager;
 
 class ProductFixtures extends Fixture implements DependentFixtureInterface
 {
-    // Constantes pour pouvoir référencer les produits depuis ImageFixtures
     public const PRODUCT_REFERENCE_PREFIX = 'product-';
 
     public function load(ObjectManager $manager): void
@@ -53,23 +52,16 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
             $product->setDescription($data['description']);
             $product->setPrice($data['price']);
 
-            // Récupération de la catégorie via la référence stockée dans CategoryFixtures
             $category = $this->getReference($data['category'], Category::class);
             $product->setCategory($category);
 
             $manager->persist($product);
-
-            // Référence du produit (pour ImageFixtures qui en aura besoin)
-            // Index commence à 0 → on ajoute +1 pour matcher l'id (1, 2, 3...)
             $this->addReference(self::PRODUCT_REFERENCE_PREFIX . ($index + 1), $product);
         }
 
         $manager->flush();
     }
 
-    /**
-     * Indique à Doctrine qu'il faut charger CategoryFixtures avant ce fichier.
-     */
     public function getDependencies(): array
     {
         return [

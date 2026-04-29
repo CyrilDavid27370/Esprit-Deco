@@ -113,13 +113,8 @@ class Product
 
     public function removeImage(Image $image): static
     {
-        if ($this->images->removeElement($image)) {
-            // set the owning side to null (unless already changed)
-            if ($image->getProduct() === $this) {
-                $image->setProduct(null);
-            }
-        }
+    $this->images->removeElement($image);
 
-        return $this;
+    return $this;
     }
 }

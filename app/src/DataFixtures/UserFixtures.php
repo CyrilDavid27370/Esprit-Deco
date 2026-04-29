@@ -12,26 +12,22 @@ class UserFixtures extends Fixture
     public function __construct(private UserPasswordHasherInterface $passwordHasher)
     {
     }
+
     public function load(ObjectManager $manager): void
     {
         // === Admin ===
         $admin = new User();
-        $admin->setEmail("admin@esprit-deco.fr");
+        $admin->setEmail('admin@esprit-deco.fr');
         $admin->setRoles(['ROLE_ADMIN']);
-        $admin->setPassword(
-            $this->passwordHasher->hashPassword($admin, 'admin')
-        );
+        $admin->setPassword($this->passwordHasher->hashPassword($admin, 'admin'));
         $admin->setIsVerified(true);
         $manager->persist($admin);
 
-        // === Utilisateur classique ===
+        // === User ===
         $user = new User();
         $user->setEmail('toto@gmail.com');
         $user->setRoles(['ROLE_USER']);
-        $user->setPassword(
-            $this->passwordHasher->hashPassword($user, 'pass')
-        );
-
+        $user->setPassword($this->passwordHasher->hashPassword($user, 'pass'));
         $user->setIsVerified(true);
         $manager->persist($user);
 
