@@ -21,7 +21,7 @@ class ProductRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->leftJoin('p.category', 'c')
             ->addSelect('c')
-            ->leftJoin('p.images', 'i')
+            ->leftJoin('p.images', 'i', 'WITH', 'i.isPrincipal = true')
             ->addSelect('i')
             ->orderBy('p.id', 'ASC')
             ->getQuery()
