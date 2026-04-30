@@ -21,7 +21,7 @@ class CategoryFixtures extends Fixture
             ['name' => 'Lumière', 'color' => '#f0ad4e', 'ref' => self::CATEGORY_LUMIERE],
             ['name' => 'Mural', 'color' => '#d9534f', 'ref' => self::CATEGORY_MURAL],
             ['name' => 'Décor', 'color' => '#5cb85c', 'ref' => self::CATEGORY_DECOR],
-            ['name' => 'Pratique', 'color' => '#df691a', 'ref' => self::CATEGORY_PRATIQUE],
+            ['name' => 'Pratique', 'color' => '#4e5d6c', 'ref' => self::CATEGORY_PRATIQUE],
         ];
 
         foreach ($categories as $data) {
