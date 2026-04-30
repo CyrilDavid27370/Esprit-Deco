@@ -37,6 +37,16 @@
     color: #fff;
 }
 
+/* ===== Lien titre du produit ===== */
+.product-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.product-link:hover {
+    color: var(--bs-primary);
+}
+
 /* À partir de tablette : passer sur une ligne */
 @media (min-width: 768px) {
     .card-meta {
