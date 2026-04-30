@@ -18,6 +18,14 @@
                     <a class="nav-link" href="{{ path('app_home') }}">Boutique</a>
                 </li>
 
+            {% if is_granted('ROLE_ADMIN') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_admin') }}">
+                        <i class="bi bi-speedometer2"></i> Espace admin
+                    </a>
+                </li>
+            {% endif %}
+
                 {% if app.user %}
                     {# === Utilisateur connecté : email + bouton déconnexion alignés === #}
                     <li class="nav-item d-flex align-items-center gap-2">
