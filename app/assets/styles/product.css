@@ -47,9 +47,98 @@
     color: var(--bs-primary);
 }
 
+/* ===== FICHE PRODUIT ===== */
+.product-show {
+    background-color: #2b3e50;
+    padding: 2rem;
+    margin: 2rem auto;
+}
+
+/* === Cadre titre + catégorie === */
+.product-header {
+    background-color: #4e5d6c;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.product-title {
+    color: var(--bs-primary);
+    margin-bottom: 1rem;
+}
+
+.product-separator {
+    width: 50%;
+    margin: 1rem auto;
+    border-top: 1px solid var(--bs-primary);
+}
+
+.product-category {
+    color:#fff;
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+/* === Image carrousel === */
+.product-carousel-img {
+    max-height: 400px;
+    object-fit: contain;
+}
+
+/* === description === */
+.product-description {
+    margin: 1.5rem 0;
+    text-align: center;
+    color: #fff;
+    padding: 0 2rem;
+}
+
+/* === Cadre prix + bouton === */
+.product-actions {
+    background-color: #4e5d6c;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* === Badge prix + bouton "Ajouter au panier"*/
+.product-actions .price-badge,
+.btn-cart {
+    width: 280px;
+    font-size: 1.2rem;
+    padding: 1rem 0;
+    border-radius: 50px;
+    text-align: center;
+    box-sizing: border-box;
+}
+/* === Couleurs spécifiques au prix === */
+.product-actions .price-badge {
+    background-color: var(--bs-primary);
+    color: #fff;
+}
+
+/* === Bouton "Ajouter au panier" === */
+.btn-cart {
+    background-color: #4e5d6c;;
+    color: #fff;
+    border: 2px solid var(--bs-primary);
+}
+
+.btn-cart:hover {
+    background-color: var(--bs-primary);
+    color:#fff
+}
+
 /* À partir de tablette : passer sur une ligne */
 @media (min-width: 768px) {
     .card-meta {
         flex-direction: row;
+    }
+
+    .product-actions {
+        flex-direction: row;
+        justify-content: space-around;
     }
 }

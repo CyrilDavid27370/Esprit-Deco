@@ -5,7 +5,7 @@
 {% block body %}
     <div class="product-show">
         {# === Cadre titre + catégorie === #}
-        div class="product-header">
+        <div class="product-header">
             <h1 class="product-title">{{ product.title }}</h1>
             <hr class="product-separator">
             <p class="product-category">{{ product.category.name}}</p>
@@ -29,7 +29,7 @@
                 <span class="visually-hidden">Précedent</span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Suivant</span>
             </button>
         {% endif %}
