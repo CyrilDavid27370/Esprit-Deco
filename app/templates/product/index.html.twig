@@ -1,5 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
+{% block title %}Boutique -EspritDéco{% endblock %}
 
+{% block body %}
+    <div class="row g-4">
+        {% for product in products %}
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    {# === Titre du produit === #}
+                    <div class="card-header text-center">
+                        <h5 class="card-title mb-0">{{ product.title }}</h5>
+                    </div>
+
+                    {# === Image principale === #}
+                    {% if product.images is not empty %}
+                    {% set principalImage = product.images.first %}
+                        <img src="{{ asset(principalImage.path) }}" alt="{{ principalImage.alt }}" class="card-img-top">
+                    {% else %}
+                        <div class="no-image">🚫</div>
+                    {% endif %}
+
+                    {# === Description tronquée à 20 mots === #}
+                    <div class="card-body">
+                        <p class="card-text">
+                            {{ product.description|split(' ')|slice(0, 20)|join(' ')}}...
+                        </p>
+                    </div>
+
+                    {# === Footer : catégorie + prix === #}
+                    <div class="card-footer">
+                        <div class="card-meta">
+                            <span class="badge" style="background-color: {{ product.category.color }}">
+                                {{ product.category.name }}
+                            </span>
+                            <span class="badge price-badge">
+                                {{ product.price }} €
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
