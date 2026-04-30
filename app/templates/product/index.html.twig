@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Boutique -EspritDéco{% endblock %}
+{% block title %}Boutique - EspritDéco{% endblock %}
 
 {% block body %}
     <div class="row g-4">
@@ -9,16 +9,16 @@
                 <div class="card h-100">
                     {# === Titre du produit === #}
                     <div class="card-header text-center">
-                        <h5 class="card-title mb-0">
+                        <h2 class="card-title mb-0">
                             <a href="{{ path('app_product_show', {id: product.id}) }}" class="product-link">
-                            {{ product.title }}
+                                {{ product.title }}
                             </a>
-                        </h5>
+                        </h2>
                     </div>
 
                     {# === Image principale === #}
                     {% if product.images is not empty %}
-                    {% set principalImage = product.images.first %}
+                        {% set principalImage = product.images.first %}
                         <img src="{{ asset(principalImage.path) }}" alt="{{ principalImage.alt }}" class="card-img-top">
                     {% else %}
                         <div class="no-image">🚫</div>
@@ -27,7 +27,7 @@
                     {# === Description tronquée à 20 mots === #}
                     <div class="card-body">
                         <p class="card-text">
-                            {{ product.description|split(' ')|slice(0, 20)|join(' ')}}...
+                            {{ product.description|split(' ')|slice(0, 20)|join(' ') }}...
                         </p>
                     </div>
 
