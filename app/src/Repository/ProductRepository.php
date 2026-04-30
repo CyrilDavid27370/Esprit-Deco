@@ -16,7 +16,11 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    public function findAllWithCategoryAndImages(): array
+    /**
+     * Récupère TOUS les produits avec leur catégorie et UNIQUEMENT leur image principale.
+     * Utilisé pour la page d'accueil (cartes produits).
+     */
+    public function findAllWithCategoryAndPrincipalImage(): array
     {
         return $this->createQueryBuilder('p')
             ->leftJoin('p.category', 'c')
@@ -26,5 +30,22 @@ class ProductRepository extends ServiceEntityRepository
             ->orderBy('p.id', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Récupère UN produit avec sa catégorie et TOUTES ses images.
+     * Utilisé pour la fiche produit (carrousel).
+     */
+    public function findOneWithCategoryAndAllImages(int $id): ?Product
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.category', 'c')
+            ->addSelect('c')
+            ->leftJoin('p.images', 'i')
+            ->addSelect('i')
+            ->where('p.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }
