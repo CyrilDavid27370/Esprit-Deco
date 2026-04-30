@@ -12,7 +12,7 @@ final class ProductController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(ProductRepository $productRepository): Response
     {
-        $products = $productRepository->findAll();
+        $products = $productRepository->findAllWithCategoryAndImages();
 
         return $this->render('product/index.html.twig', [
             'products' => $products
