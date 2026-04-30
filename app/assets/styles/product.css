@@ -106,7 +106,8 @@
 /* === Badge prix + bouton "Ajouter au panier"*/
 .product-actions .price-badge,
 .btn-cart {
-    width: 280px;
+    width: 100%;
+    max-width: 280px;
     font-size: 1.2rem;
     padding: 1rem 0;
     border-radius: 50px;
