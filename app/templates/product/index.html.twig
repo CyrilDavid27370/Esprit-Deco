@@ -9,7 +9,11 @@
                 <div class="card h-100">
                     {# === Titre du produit === #}
                     <div class="card-header text-center">
-                        <h5 class="card-title mb-0">{{ product.title }}</h5>
+                        <h5 class="card-title mb-0">
+                            <a href="{{ path('app_product_show', {id: product.id}) }}" class="product-link">
+                            {{ product.title }}
+                            </a>
+                        </h5>
                     </div>
 
                     {# === Image principale === #}
