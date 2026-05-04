@@ -46,5 +46,10 @@
             <span class="badge price-badge">{{ product.price}} €</span>
             <button class="btn btn-cart">Ajouter au panier</button>
         </div>
+
+        {# === Bouton retour === #}
+        <div class="text-center mt-4">
+            <a href="{{ referer ?? path('app_home') }}" class="btn btn-primary">Retour</a>
+        </div>
     </div>
 {% endblock %}

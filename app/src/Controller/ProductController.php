@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -20,7 +21,7 @@ final class ProductController extends AbstractController
     }
 
     #[Route('/product/{id}', name: 'app_product_show', requirements: ['id' => '\d+'])]
-    public function show(int $id, ProductRepository $productRepository): Response
+    public function show(int $id, Request $request, ProductRepository $productRepository): Response
     {
         $product = $productRepository->findOneWithCategoryAndAllImages($id);
 
@@ -30,6 +31,7 @@ final class ProductController extends AbstractController
 
         return $this->render('product/show.html.twig', [
             'product' => $product,
+            'referer' => $request->headers->get('referer'),
         ]);
     }
 }
