@@ -16,7 +16,7 @@
 
 .table-admin a {
     color: inherit;
-    text-decoration: none;
+    text-decoration: none !important ;
 }
 
 .table-admin a:hover {
