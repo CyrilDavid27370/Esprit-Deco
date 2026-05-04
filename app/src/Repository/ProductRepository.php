@@ -6,6 +6,7 @@ use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+
 /**
  * @extends ServiceEntityRepository<Product>
  */
@@ -16,10 +17,6 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    /**
-     * Récupère TOUS les produits avec leur catégorie et UNIQUEMENT leur image principale.
-     * Utilisé pour la page d'accueil (cartes produits).
-     */
     public function findAllWithCategoryAndPrincipalImage(): array
     {
         return $this->createQueryBuilder('p')
@@ -32,10 +29,6 @@ class ProductRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * Récupère UN produit avec sa catégorie et TOUTES ses images.
-     * Utilisé pour la fiche produit (carrousel).
-     */
     public function findOneWithCategoryAndAllImages(int $id): ?Product
     {
         return $this->createQueryBuilder('p')
@@ -48,4 +41,15 @@ class ProductRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function findAllWithCategory(): array
+    {
+        return $this->createQueryBuilder('p')
+        ->leftJoin('p.category', 'c')
+        ->addSelect('c')
+        ->orderBy('p.id', 'ASC')
+        ->getQuery()
+        ->getResult();
+    }
+
 }
