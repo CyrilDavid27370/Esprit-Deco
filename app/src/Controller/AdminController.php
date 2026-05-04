@@ -17,12 +17,12 @@ final class AdminController extends AbstractController
         return $this->render('admin/index.html.twig');
     }
 
-    #[Route('/admin/products', name: 'app_admin-product_list')]
+    #[Route('/admin/products', name: 'app_admin_product_list')]
     public function productList(ProductRepository $productRepository): Response
     {
-        $products = $productRepository->findAllWithCategory;
+        $products = $productRepository->findAllWithCategory();
 
-        return $this->render('admin/index.html.twig', [
+        return $this->render('admin/product_list.html.twig', [
             'products' => $products
         ]);
     }
