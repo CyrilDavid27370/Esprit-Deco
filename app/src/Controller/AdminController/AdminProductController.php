@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\AdminProduct;
 
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,7 +17,7 @@ final class AdminProductController extends AbstractController
         $products = $productRepository->findAllWithCategory();
 
 
-        return $this->render('admin_product_list.html.twig', [
+        return $this->render('admin/product_list.html.twig', [
             'products' => $products,
         ]);
     }

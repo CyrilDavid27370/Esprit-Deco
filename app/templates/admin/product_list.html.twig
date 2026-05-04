@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des produits - EspritDéco{% endblock %}
+
+{% block body %}
+    <h2 class="text-center mb-4">Gestion des produits</h2>
+
+    {# Bouton ajouter #}
+    <div class="text-center mb-3">
+        <a href="#" class="btn btn-success">
+            <i class="bi bi-plus-lg"></i>
+        </a>
+    </div>
+
+    {# Tableau des produits #}
+    <div class="table-responsive">
+        <table class="table table-admin">
+            <thead>
+                <tr>
+                    <th>Titre</th>
+                    <th>Prix</th>
+                    <th>Catégorie</th>
+                    <th>Modifier</th>
+                    <th>Supprimer</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('app_product_show', {id: product.id}) }}">
+                                {{ product.title }}
+                            </a>
+                        </td>
+                        <td>{{ product.price }} €</td>
+                        <td>{{ product.category.name }}</td>
+                        <td>
+                            <a href="#" class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {# Bouton retour #}
+    <div class="text-center mt-3">
+        <a href="{{ path('app_admin') }}" class="btn btn-primary">Retour</a>
+    </div>
+{% endblock %}
