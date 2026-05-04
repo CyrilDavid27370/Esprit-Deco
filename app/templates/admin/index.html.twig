@@ -1,20 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AdminController!{% endblock %}
+{% block title %}Espace Administrateur - EspritDéco{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="row justtify-content-center align-items-center min-vh-75">
+        <div class="col-12 col-md-8 col-lg-6 offset-lg-3">
+            <div class="card-shadows-sm">
+                <div class="card-body text-center py-5">
+                    <h2 class="mb-2 text center">Espace administrateur</h2>
+                    <p class="text-muted mb-4">Choissisez une section pour gérer une des entités ci-dessus</p>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/var/www/html/src/Controller/AdminController.php</code></li>
-        <li>Your template at <code>/var/www/html/templates/admin/index.html.twig</code></li>
-    </ul>
-</div>
+                    <div class="d-grid gap-3">
+                        <a href="#" class="btn btn-primary fw-bold">Produits</a>
+                        <a href="#" class="btn btn-success fw-bold">Catégorie</a>
+                        <a href="#" class="btn btn-info fw-bold">Utilisateur</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
