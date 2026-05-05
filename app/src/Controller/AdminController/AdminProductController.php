@@ -3,6 +3,7 @@
 namespace App\Controller\AdminController;
 
 use App\Repository\ProductRepository;
+use App\Service\ImageHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,7 +14,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 final class AdminProductController extends AbstractController
 {
-    public function __construct(private ProductRepository $productRepository, private EntityManagerInterface $em)
+    public function __construct(
+        private ProductRepository $productRepository,
+        private EntityManagerInterface $em,
+        private ImageHandler $imageHandler)
     {
     }
 
@@ -28,25 +32,21 @@ final class AdminProductController extends AbstractController
         ]);
     }
 
-    #[Route('admin/product/delete/{id}', name: 'app_admin_product_delete')]
+    #[Route('/admin/product/{id}/delete', name: 'app_admin_product_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function delete(int $id, Request $request): Response
     {
         $product = $this->productRepository->find($id);
 
-        if ($this->isCsrfTokenValid('delete-product-' . $id, $request->request->get('_token'))) {
-            foreach ($product->getImages() as $image) {
-                $imagePath = $this->getParameter('kernel.project_dir') . '/public/' . $image->getPath();
-                if (file_exists($imagePath)) {
-                    unlink($imagePath);
-                }
-            }
-
-            $this->em->remove($product);
-            $this->em->flush();
-            $this->addFlash('success', 'produit supprimé avec succès');
-        } else {
-            $this->addFlash('danger', 'Token CSRF invalide');
+        if (!$this->isCsrfTokenValid('delete-product-' . $id, $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Token CSRF invalide.');
+            return $this->redirectToRoute('app_admin_product_list');
         }
+
+        $this->imageHandler->deleteFiles($product->getImages());
+        $this->em->remove($product);
+        $this->em->flush();
+        $this->addFlash('success', 'Produit supprimé avec succès.');
+
         return $this->redirectToRoute('app_admin_product_list');
     }
 }
