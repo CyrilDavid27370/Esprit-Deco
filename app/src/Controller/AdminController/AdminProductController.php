@@ -28,7 +28,7 @@ final class AdminProductController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/{id}', name: 'app_admin_product_delete')]
+    #[Route('admin/product/delete/{id}', name: 'app_admin_product_delete')]
     public function delete(int $id, Request $request): Response
     {
         $product = $this->productRepository->find($id);
