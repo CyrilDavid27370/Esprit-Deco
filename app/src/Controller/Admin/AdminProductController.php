@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\AdminProduct;
+namespace App\Controller\Admin;
 
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

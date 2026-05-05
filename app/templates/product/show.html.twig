@@ -2,6 +2,11 @@
 
 {% block title %}{{ product.title }} - EspritDéco{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ importmap('product') }}
+{% endblock %}
+
 {% block body %}
     <div class="product-show">
         {# === Cadre titre + catégorie === #}

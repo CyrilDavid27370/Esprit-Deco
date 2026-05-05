@@ -2,6 +2,11 @@
 
 {% block title %}Gestion des produits - EspritDéco{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ importmap('admin') }}
+{% endblock %}
+
 {% block body %}
     <h2 class="text-center mb-4">Gestion des produits</h2>
 
