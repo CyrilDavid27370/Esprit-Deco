@@ -2,6 +2,11 @@
 
 {% block title %}{{ product.title }} - EspritDéco{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ importmap('product') }}
+{% endblock %}
+
 {% block body %}
     <div class="product-show">
         {# === Cadre titre + catégorie === #}
@@ -45,6 +50,11 @@
         <div class="product-actions">
             <span class="badge price-badge">{{ product.price}} €</span>
             <button class="btn btn-cart">Ajouter au panier</button>
+        </div>
+
+        {# === Bouton retour === #}
+        <div class="text-center mt-4">
+            <a href="{{ referer ?? path('app_home') }}" class="btn btn-primary">Retour</a>
         </div>
     </div>
 {% endblock %}
