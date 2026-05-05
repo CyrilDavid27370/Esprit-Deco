@@ -2,6 +2,9 @@
 
 namespace App\Controller\AdminController;
 
+use App\Entity\Image;
+use App\Entity\Product;
+use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use App\Service\ImageHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[IsGranted('ROLE_ADMIN')]
 final class AdminProductController extends AbstractController
@@ -17,7 +21,8 @@ final class AdminProductController extends AbstractController
     public function __construct(
         private ProductRepository $productRepository,
         private EntityManagerInterface $em,
-        private ImageHandler $imageHandler)
+        private ImageHandler $imageHandler,
+        private SluggerInterface $slugger)
     {
     }
 
@@ -30,6 +35,45 @@ final class AdminProductController extends AbstractController
         return $this->render('admin/product_list.html.twig', [
             'products' => $products,
         ]);
+    }
+
+    #[Route('/admin/product/add', name: 'app_admin_product_add')]
+    public function add(Product $product, Request $request):Response
+    {
+        $form = $this->createForm(ProductType::class, $product);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $imageFiles = $form->get('images')->getData();
+
+            foreach ($imageFiles as $index => $imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFileName = $this->slugger->slug($originalFilename);
+                $newFileName = uniqid() . '-' . $safeFileName . '-' . $imageFile->guessExtension();
+
+                $imageFile->move(
+                    $this->getParameter('kernel.project_dir') . '/public/upload/products',
+                    $newFileName
+                );
+
+                $image = new Image();
+                $image->setPath('upload/products/' . $newFileName);
+                $image->setAlt($product->getTitle());
+                $image->setIsPrincipal($index === 0);
+                $product->addImage($image);
+                $this->em->persist($image);
+            }
+
+                $this->em->persist($product);
+                $this->em->flush();
+
+                $this->addFlash('success', 'Produit ajouté avec succès.');
+                return $this->redirectToRoute('app_admin_product_list');
+        }
+                return $this->render('admin/product_add.html.twig', [
+                    'form' => $form,
+                ]);
+
     }
 
     #[Route('/admin/product/{id}/delete', name: 'app_admin_product_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
