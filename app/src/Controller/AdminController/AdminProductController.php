@@ -3,7 +3,6 @@
 namespace App\Controller\AdminController;
 
 use App\Entity\Image;
-use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use App\Service\ImageHandler;
@@ -40,9 +39,9 @@ final class AdminProductController extends AbstractController
         #[Route('/admin/product/add', name: 'app_admin_product_add')]
     public function add(Request $request): Response
     {
-        $product = new Product();
-        $form = $this->createForm(ProductType::class, $product);
+        $form = $this->createForm(ProductType::class);
         $form->handleRequest($request);
+        $product = $form->getData();
 
         if ($form->isSubmitted() && $form->isValid()) {
             $imageFiles = $form->get('images')->getData();
