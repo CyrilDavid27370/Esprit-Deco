@@ -44,4 +44,12 @@ class ImageHandler
                 }
         }
     }
+
+    public function deleteSingleFile(Image $image):void
+    {
+        $imagePath = $this->projectDir . '/public' . $image->getPath();
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+    }
 }
