@@ -12,7 +12,7 @@
 
     {# Bouton ajouter #}
     <div class="text-center mb-3">
-        <a href="{{ path('app_admin_product_add') }}" class="btn btn-success">
+        <a href="{{ path('app_admin_product_save') }}" class="btn btn-success">
             <i class="bi bi-plus-lg"></i>
         </a>
     </div>
@@ -40,7 +40,7 @@
                         <td>{{ product.price }} €</td>
                         <td>{{ product.category.name }}</td>
                         <td>
-                            <a href="#" class="btn btn-sm btn-primary">
+                            <a href="{{ path('app_admin_product_save', {id: product.id}) }}" class="btn btn-sm btn-primary">
                                 <i class="bi bi-pencil-fill"></i>
                             </a>
                         </td>
