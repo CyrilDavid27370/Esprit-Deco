@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{ product.id is not null ?  'Modifier' : 'Ajouter' }} un produit - EspritDéco {% endblock %}
+{% block title %}{{ product.id ?  'Modifier' : 'Ajouter' }} un produit - EspritDéco {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -11,7 +11,7 @@
     <div class="row justify-content-center">
         <div class="col-12 col-md-8">
 
-            <h2 class="text-center mb-4">{{ product.id is not null ? 'Modifier' : 'Ajouter' }} un produit</h2>
+            <h2 class="text-center mb-4">{{ product.id  ? 'Modifier' : 'Ajouter' }} un produit</h2>
 
             {{ form_start(form, {'method': 'POST', 'attr': {'enctype': 'multipart/form-data', 'data-turbo': 'false'}}) }}
             {{ form_errors(form) }}
@@ -47,7 +47,7 @@
             </div>
 
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-{{ product.id is not null ?  'primary' : 'success' }}">
+                <button type="submit" class="btn btn-{{ product.id  ?  'primary' : 'success' }}">
                     {{ product.id ? 'Modifier' : 'Ajouter' }}
                 </button>
             </div>
