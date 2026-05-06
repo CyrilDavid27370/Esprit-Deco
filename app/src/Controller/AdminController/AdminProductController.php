@@ -7,7 +7,6 @@ use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use App\Service\ImageHandler;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,7 +33,7 @@ final class AdminProductController extends AbstractController
     }
 
     #[Route('/admin/product/save/{id}', name: 'app_admin_product_save', requirements: ['id' => '\d+'], defaults: ['id' => null])]
-    public function save(Request $request, #[MapEntity()] ?Product $product = null): Response
+    public function save(Request $request, ?Product $product): Response
     {
         $product = $product ?? new Product();
         $form = $this->createForm(ProductType::class, $product);
