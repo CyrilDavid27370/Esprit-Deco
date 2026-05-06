@@ -38,9 +38,8 @@ final class AdminProductController extends AbstractController
     public function save(Request $request, ?int $id = null): Response
     {
         $product = $id ? $this->productRepository->find($id) : new Product();
-        $form = $this->createForm(ProductType::class);
+        $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
-        $product = $form->getData();
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->imageHandler->uploadImages($form->get('images')->getData(), $product);
