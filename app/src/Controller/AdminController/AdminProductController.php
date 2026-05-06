@@ -7,6 +7,7 @@ use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use App\Service\ImageHandler;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,15 +20,13 @@ final class AdminProductController extends AbstractController
     public function __construct(
         private ProductRepository $productRepository,
         private EntityManagerInterface $em,
-        private ImageHandler $imageHandler)
-    {
-    }
+        private ImageHandler $imageHandler
+    ) {}
 
     #[Route('/admin/product', name: 'app_admin_product_list')]
     public function product_list(): Response
     {
         $products = $this->productRepository->findAllWithCategory();
-
 
         return $this->render('admin/product_list.html.twig', [
             'products' => $products,
@@ -35,9 +34,9 @@ final class AdminProductController extends AbstractController
     }
 
     #[Route('/admin/product/save/{id}', name: 'app_admin_product_save', requirements: ['id' => '\d+'], defaults: ['id' => null])]
-    public function save(Request $request, ?int $id = null): Response
+    public function save(Request $request, #[MapEntity()] ?Product $product = null): Response
     {
-        $product = $id ? $this->productRepository->find($id) : new Product();
+        $product = $product ?? new Product();
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
@@ -46,13 +45,14 @@ final class AdminProductController extends AbstractController
             $this->em->persist($product);
             $this->em->flush();
 
-            $this->addFlash('success', $id ? 'Produit modifié avec succès.' : 'Produit ajouté avec succès.');
+            $this->addFlash('success', $product->getId() ? 'Produit modifié avec succès.' : 'Produit ajouté avec succès.');
             return $this->redirectToRoute('app_admin_product_list');
         }
-            return $this->render('admin/product_save.html.twig', [
-                'form' => $form,
-                'product' => $product,
-            ]);
+
+        return $this->render('admin/product_save.html.twig', [
+            'form' => $form,
+            'product' => $product,
+        ]);
     }
 
     #[Route('/admin/product/{id}/delete', name: 'app_admin_product_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
@@ -73,4 +73,3 @@ final class AdminProductController extends AbstractController
         return $this->redirectToRoute('app_admin_product_list');
     }
 }
-
