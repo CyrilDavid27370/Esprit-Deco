@@ -37,9 +37,10 @@ final class AdminProductController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/product/add', name: 'app_admin_product_add')]
-    public function add(Product $product, Request $request):Response
+        #[Route('/admin/product/add', name: 'app_admin_product_add')]
+    public function add(Request $request): Response
     {
+        $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
@@ -49,31 +50,30 @@ final class AdminProductController extends AbstractController
             foreach ($imageFiles as $index => $imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFileName = $this->slugger->slug($originalFilename);
-                $newFileName = uniqid() . '-' . $safeFileName . '-' . $imageFile->guessExtension();
+                $newFileName = uniqid() . '-' . $safeFileName . '.' . $imageFile->guessExtension();
 
                 $imageFile->move(
-                    $this->getParameter('kernel.project_dir') . '/public/upload/products',
+                    $this->getParameter('kernel.project_dir') . '/public/uploads/products',
                     $newFileName
                 );
 
                 $image = new Image();
-                $image->setPath('upload/products/' . $newFileName);
-                $image->setAlt($product->getTitle());
+                $image->setPath('uploads/products/' . $newFileName);
+                $image->setAlt($originalFilename);
                 $image->setIsPrincipal($index === 0);
                 $product->addImage($image);
-                $this->em->persist($image);
             }
 
-                $this->em->persist($product);
-                $this->em->flush();
+            $this->em->persist($product);
+            $this->em->flush();
 
-                $this->addFlash('success', 'Produit ajouté avec succès.');
-                return $this->redirectToRoute('app_admin_product_list');
+            $this->addFlash('success', 'Produit ajouté avec succès.');
+            return $this->redirectToRoute('app_admin_product_list');
         }
-                return $this->render('admin/product_add.html.twig', [
-                    'form' => $form,
-                ]);
 
+        return $this->render('admin/product_add.html.twig', [
+            'form' => $form,
+        ]);
     }
 
     #[Route('/admin/product/{id}/delete', name: 'app_admin_product_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
@@ -94,3 +94,4 @@ final class AdminProductController extends AbstractController
         return $this->redirectToRoute('app_admin_product_list');
     }
 }
+

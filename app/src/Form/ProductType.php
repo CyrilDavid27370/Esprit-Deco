@@ -12,11 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\All;
-use Symfony\Component\Validator\Constraints\Image;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ProductType extends AbstractType
 {
@@ -26,31 +22,32 @@ class ProductType extends AbstractType
             ->add('title', TextType::class, [
                 'label' => 'Titre',
                 'constraints' => [
-                    new NotBlank(message: "le titre est obligatoire."),
-                    new Length(min: 3, minMessage: "le titre doit faire au moins {{ limit }} caractères"),
-                ]
+                    new Assert\NotBlank(message: 'Le titre est obligatoire.'),
+                    new Assert\Length(min: 3, minMessage: 'Le titre doit faire au moins {{ limit }} caractères.'),
+                ],
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
                 'constraints' => [
-                    new NotBlank(message : "La description est obligatoire."),
-                ]
+                    new Assert\NotBlank(message: 'La description est obligatoire.'),
+                ],
             ])
             ->add('price', MoneyType::class, [
                 'label' => 'Prix',
                 'currency' => 'EUR',
                 'constraints' => [
-                    new NotBlank(message: "Le prix est obligatoire."),
-                    new Positive(message: "le prix doit etre positif."),
-                ]
+                    new Assert\NotBlank(message: 'Le prix est obligatoire.'),
+                    new Assert\Positive(message: 'Le prix doit être positif.'),
+                ],
             ])
             ->add('category', EntityType::class, [
+                'label' => 'Catégorie',
                 'class' => Category::class,
                 'choice_label' => 'name',
                 'placeholder' => 'Choisir une catégorie',
                 'constraints' => [
-                    new NotBlank(message: "la catégorie est obligatoire.")
-                ]
+                    new Assert\NotBlank(message: 'La catégorie est obligatoire.'),
+                ],
             ])
             ->add('images', FileType::class, [
                 'label' => 'Images',
@@ -58,12 +55,18 @@ class ProductType extends AbstractType
                 'required' => false,
                 'multiple' => true,
                 'constraints' => [
-                    new All([
-                        new Image([
-                            'maxSize' => "2M",
-                        ])
-                    ])
-                ]
+                    new Assert\All([
+                        new Assert\File([
+                            'maxSize' => '2M',
+                            'mimeTypes' => [
+                                'image/jpeg',
+                                'image/png',
+                                'image/webp',
+                            ],
+                            'mimeTypesMessage' => 'Veuillez uploader une image valide (JPEG, PNG, WEBP).',
+                        ]),
+                    ]),
+                ],
             ])
         ;
     }
@@ -72,6 +75,7 @@ class ProductType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Product::class,
+            'csrf_protection' => false,
         ]);
     }
 }
