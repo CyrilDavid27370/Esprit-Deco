@@ -22,3 +22,20 @@
 .table-admin a:hover {
     text-decoration: underline;
 }
+
+/* Images miniatures */
+.image-card {
+    position: relative;
+    width: 120px;
+    text-align: center;
+}
+
+.image-card img {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+}
+
+.image-principal img {
+    border: 3px solid var(--bs--primary) !important;
+}

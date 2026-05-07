@@ -1,6 +1,6 @@
 import '../styles/admin.css';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('turbo:load', () => {
 
     // Supprimer une image
     document.querySelectorAll('.btn-delete-image').forEach(btn => {
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const imageId = btn.dataset.imageId;
             const csrf = btn.dataset.csrf;
 
-            const response = await fetch(`/admin/image/${imageId}/delete`, {
+            const response = await fetch(`/admin/image/delete/${imageId}`, {
                 method: 'DELETE',
                 headers: { 'X-CSRF-Token': csrf }
             });
@@ -29,26 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const imageId = btn.dataset.imageId;
             const csrf = btn.dataset.csrf;
 
-            const response = await fetch(`/admin/image/${imageId}/principal`, {
+            const response = await fetch(`/admin/image/principal/${imageId}`, {
                 method: 'POST',
                 headers: { 'X-CSRF-Token': csrf }
             });
 
             if (response.ok) {
-                // Retire les styles principal de toutes les images
-                document.querySelectorAll('.image-card').forEach(card => {
-                    card.classList.remove('image-principal');
-                    const badge = card.querySelector('.badge');
-                    if (badge) badge.remove();
-                    // Remet le bouton étoile si pas déjà là
-                    const actions = card.querySelector('.image-actions');
-                    if (!actions.querySelector('.btn-set-principal')) {
-                        const newId = card.id.replace('image-', '');
-                        // on recharge la page pour simplifier
-                    }
-                });
-
-                // Recharge la page pour mettre à jour l'affichage
                 window.location.reload();
             } else {
                 alert('Erreur lors du changement d\'image principale.');

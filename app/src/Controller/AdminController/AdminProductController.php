@@ -4,6 +4,7 @@ namespace App\Controller\AdminController;
 
 use App\Entity\Product;
 use App\Form\ProductType;
+use App\Repository\ImageRepository;
 use App\Repository\ProductRepository;
 use App\Service\ImageHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,6 +20,7 @@ final class AdminProductController extends AbstractController
 {
     public function __construct(
         private ProductRepository $productRepository,
+        private ImageRepository $imageRepository,
         private EntityManagerInterface $em,
         private ImageHandler $imageHandler
     ) {}
@@ -92,7 +94,7 @@ final class AdminProductController extends AbstractController
         return $this->json(['success' => true]);
     }
 
-    #[Route('/admin/image/principal/{id}', name: 'app_admin_image_principal', requirements: ['id' => '\d+'], methods: ['DELETE'])]
+    #[Route('/admin/image/principal/{id}', name: 'app_admin_image_principal', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function setPrincipal(int $id, Request $request): JsonResponse {
         $image = $this->imageRepository->find($id);
 
@@ -100,12 +102,12 @@ final class AdminProductController extends AbstractController
             return $this->json(['error' => 'Image non trouvée'], 404);
         }
 
-        if (!$this->isCsrfTokenValid('delete-image-' . $id, $request->headers->get('X-CSRF-Token'))) {
+        if (!$this->isCsrfTokenValid('principal-image-' . $id, $request->headers->get('X-CSRF-Token'))) {
             return $this->json(['error' => 'Token CSRF invalide'], 403);
         }
 
-        foreach ($$image->getProduct()->getImages() as $img) {
-            $img->setIsPricipal(false);
+        foreach ($image->getProduct()->getImages() as $img) {
+            $img->setIsPrincipal(false);
         }
 
         $image->setIsPrincipal(true);
