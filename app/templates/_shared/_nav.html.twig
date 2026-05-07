@@ -50,27 +50,26 @@
                 {% endif %}
             </ul>
 
-            {# Barre de recherche à droite #}
-            <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Recherche" aria-label="Recherche">
-                <button class="btn btn-search" type="submit">
-                    <i class="bi bi-search"></i>
-                </button>
-            </form>
-
-            {# Icône panier #}
-            <button class="btn btn-link position-relative ms-3 text-white"
-                type="button"
-                data-bs-toggle="offcanvas"
-                data-bs-target="#cartOffcanvas">
-                    <i class="bi bi-cart3 fs-4"></i>
-                    {% set cartCount = app.session.get('cart') ? app.session.get('cart')|reduce((carry, qty) => carry + qty, 0) : 0%}
-                    {% if cartCount > 0 %}
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            {{ cartCount }}
-                        </span>
-                    {% endif %}
+    <div class="d-flex align-items-center gap-2">
+    {# Barre de recherche #}
+        <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Recherche" aria-label="Recherche">
+            <button class="btn btn-search" type="submit">
+                <i class="bi bi-search"></i>
             </button>
-        </div>
+        /form>
+
+    {# Icône panier #}
+        <button class="btn btn-link" style="display: flex; flex-direction: row; align-items: center; gap: 8px;"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#cartOffcanvas">
+            <i class="bi bi-cart3 fs-4 text-secondary"></i>
+        {% set cartCount = app.session.get('cart') ? app.session.get('cart')|reduce((carry, qty) => carry + qty, 0) : 0 %}
+        {% if cartCount > 0 %}
+            <span class="badge bg-danger">{{ cartCount }}</span>
+        {% endif %}
+        </button>
+    </div>
     </div>
 </nav>
