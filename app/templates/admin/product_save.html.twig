@@ -40,6 +40,52 @@
                 {{ form_errors(form.category) }}
             </div>
 
+            {# === Miniatures des images existantes === #}
+            {% if product.id and product.images is not empty %}
+                <div class="mb-3">
+                    <label class="form-label">Images actuelles</label>
+                    <div class="d-flex flex-wrap gap-3" id="images-container">
+                        {% for image in product.images %}
+        <div class="image-card position-relative {{ image.isPrincipal ? 'border border-primary border-2' : '' }}"
+            id="image-{{ image.id }}"
+                style="width: 120px;">
+
+            <img src="{{ asset(image.path) }}"
+                alt="{{ image.alt }}"
+                class="img-fluid rounded"
+                style="width: 120px; height: 100px; object-fit: cover;">
+
+            {% if image.isPrincipal %}
+                <span class="badge bg-primary position-absolute bottom-0 start-0"
+                    style="font-size: 0.7rem;">
+                    Principale
+                </span>
+        {% endif %}
+
+        <div class="d-flex justify-content-center gap-1 mt-1">
+            {% if not image.isPrincipal %}
+                <button type="button"
+                        class="btn btn-sm btn-primary btn-set-principal"
+                        data-image-id="{{ image.id }}"
+                        data-csrf="{{ csrf_token('principal-image-' ~ image.id) }}"
+                        title="Passer en principale">
+                    <i class="bi bi-star-fill"></i>
+                </button>
+                <button type="button"
+                        class="btn btn-sm btn-danger btn-delete-image"
+                        data-image-id="{{ image.id }}"
+                        data-csrf="{{ csrf_token('delete-image-' ~ image.id) }}"
+                        title="Supprimer">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
             <div class="mb-3">
                 {{ form_label(form.images, 'Images', {'label_attr' : {'class': 'form-label'}}) }}
                 {{ form_widget(form.images, {'attr' : {'class' : 'form-control'}}) }}

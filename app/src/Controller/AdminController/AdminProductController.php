@@ -4,10 +4,12 @@ namespace App\Controller\AdminController;
 
 use App\Entity\Product;
 use App\Form\ProductType;
+use App\Repository\ImageRepository;
 use App\Repository\ProductRepository;
 use App\Service\ImageHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,6 +20,7 @@ final class AdminProductController extends AbstractController
 {
     public function __construct(
         private ProductRepository $productRepository,
+        private ImageRepository $imageRepository,
         private EntityManagerInterface $em,
         private ImageHandler $imageHandler
     ) {}
@@ -70,5 +73,46 @@ final class AdminProductController extends AbstractController
         $this->addFlash('success', 'Produit supprimé avec succès.');
 
         return $this->redirectToRoute('app_admin_product_list');
+    }
+
+    #[Route('/admin/image/delete/{id}', name: 'app_admin_image_delete', requirements: ['id' => '\d+'], methods: ['DELETE'])]
+    public function deleteImage(int $id, Request $request): JsonResponse {
+        $image = $this->imageRepository->find($id);
+
+        if (!$image) {
+            return $this->json(['error' => 'Image non trouvée'], 404);
+        }
+
+        if (!$this->isCsrfTokenValid('delete-image-' . $id, $request->headers->get('X-CSRF-Token'))) {
+            return $this->json(['error' => 'Token CSRF invalide'], 403);
+        }
+
+        $this->imageHandler->deleteSingleFile($image);
+        $this->em->remove($image);
+        $this->em->flush();
+
+        return $this->json(['success' => true]);
+    }
+
+    #[Route('/admin/image/principal/{id}', name: 'app_admin_image_principal', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function setPrincipal(int $id, Request $request): JsonResponse {
+        $image = $this->imageRepository->find($id);
+
+        if (!$image) {
+            return $this->json(['error' => 'Image non trouvée'], 404);
+        }
+
+        if (!$this->isCsrfTokenValid('principal-image-' . $id, $request->headers->get('X-CSRF-Token'))) {
+            return $this->json(['error' => 'Token CSRF invalide'], 403);
+        }
+
+        foreach ($image->getProduct()->getImages() as $img) {
+            $img->setIsPrincipal(false);
+        }
+
+        $image->setIsPrincipal(true);
+        $this->em->flush();
+
+        return $this->json(['success' => true]);
     }
 }

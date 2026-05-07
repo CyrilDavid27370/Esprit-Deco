@@ -16,24 +16,28 @@ class ImageHandler
     }
 
     public function uploadImages(array $imageFiles, Product $product):void
-    {
-        foreach ($imageFiles as $index => $imageFile) {
-            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-            $safeFileName = $this->slugger->slug($originalFilename);
-            $newFileName = uniqid() . '-' . $safeFileName . '.' . $imageFile->guessExtension();
+{
+    $alreadyHasPrincipal = $product->getImages()->exists(
+        fn($key, $img) => $img->isPrincipal()
+    );
 
-            $imageFile->move(
-                $this->projectDir . '/public/uploads/products',
-                $newFileName
-            );
+    foreach ($imageFiles as $index => $imageFile) {
+        $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+        $safeFileName = $this->slugger->slug($originalFilename);
+        $newFileName = uniqid() . '-' . $safeFileName . '.' . $imageFile->guessExtension();
 
-            $image = new Image();
-            $image->setPath('uploads/products/' . $newFileName);
-            $image->setAlt($originalFilename);
-            $image->setIsPrincipal($index === 0);
-            $product->addImage($image);
-        }
+        $imageFile->move(
+            $this->projectDir . '/public/uploads/products',
+            $newFileName
+        );
+
+        $image = new Image();
+        $image->setPath('uploads/products/' . $newFileName);
+        $image->setAlt($originalFilename);
+        $image->setIsPrincipal(!$alreadyHasPrincipal && $index === 0);
+        $product->addImage($image);
     }
+}
 
     public function deleteFiles(Collection $images): void
     {
@@ -42,6 +46,14 @@ class ImageHandler
                 if (file_exists($imagePath)) {
                     unlink($imagePath);
                 }
+        }
+    }
+
+    public function deleteSingleFile(Image $image):void
+    {
+        $imagePath = $this->projectDir . '/public/' . $image->getPath();
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
         }
     }
 }
