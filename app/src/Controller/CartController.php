@@ -21,9 +21,9 @@ final class CartController extends AbstractController
 
         $session->set('cart', $cart);
 
-        $this->addFlash('success', $product->getTitle() . 'a été ajouté au panier.');
+        $this->addFlash('success', $product->getTitle() . ' ' . ' a été ajouté au panier');
 
 
-        return $this->redirectToRoute("app_product_list");
+        return $this->redirectToRoute("app_home");
     }
 }
