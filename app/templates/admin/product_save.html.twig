@@ -1,42 +1,43 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{ product.id ?  'Modifier' : 'Ajouter' }} un produit - EspritDéco {% endblock %}
+{% block title %}{{ product.id ? 'Modifier' : 'Ajouter' }} un produit - EspritDéco{% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     {{ importmap('admin') }}
+    {{ importmap('upload') }}
 {% endblock %}
 
 {% block body %}
     <div class="row justify-content-center">
         <div class="col-12 col-md-8">
 
-            <h2 class="text-center mb-4">{{ product.id  ? 'Modifier' : 'Ajouter' }} un produit</h2>
+            <h2 class="text-center mb-4">{{ product.id ? 'Modifier' : 'Ajouter' }} un produit</h2>
 
             {{ form_start(form, {'method': 'POST', 'attr': {'enctype': 'multipart/form-data', 'data-turbo': 'false'}}) }}
             {{ form_errors(form) }}
 
             <div class="mb-3">
-                {{ form_label(form.title, 'Titre', {'label_attr' : {'class': 'form-label'}}) }}
-                {{ form_widget(form.title, {'attr' : {'class' : 'form-control'}}) }}
+                {{ form_label(form.title, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
                 {{ form_errors(form.title) }}
             </div>
 
             <div class="mb-3">
-                {{ form_label(form.description, 'Description', {'label_attr' : {'class': 'form-label'}}) }}
-                {{ form_widget(form.description, {'attr' : {'class' : 'form-control'}}) }}
+                {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
                 {{ form_errors(form.description) }}
             </div>
 
             <div class="mb-3">
-                {{ form_label(form.price, 'Prix', {'label_attr' : {'class': 'form-label'}}) }}
-                {{ form_widget(form.price, {'attr' : {'class' : 'form-control'}}) }}
+                {{ form_label(form.price, 'Prix', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.price, {'attr': {'class': 'form-control'}}) }}
                 {{ form_errors(form.price) }}
             </div>
 
             <div class="mb-3">
-                {{ form_label(form.category, 'Categorie', {'label_attr' : {'class': 'form-label'}}) }}
-                {{ form_widget(form.category, {'attr' : {'class' : 'form-control'}}) }}
+                {{ form_label(form.category, 'Catégorie', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
                 {{ form_errors(form.category) }}
             </div>
 
@@ -44,56 +45,66 @@
             {% if product.id and product.images is not empty %}
                 <div class="mb-3">
                     <label class="form-label">Images actuelles</label>
-                    <div class="d-flex flex-wrap gap-3" id="images-container">
+                    <div id="images-container">
                         {% for image in product.images %}
-        <div class="image-card position-relative {{ image.isPrincipal ? 'border border-primary border-2' : '' }}"
-            id="image-{{ image.id }}"
-                style="width: 120px;">
+                            <div class="image-card {{ image.isPrincipal ? 'image-principal' : '' }}" id="image-{{ image.id }}">
+                                <img src="{{ asset(image.path) }}" alt="{{ image.alt }}">
 
-            <img src="{{ asset(image.path) }}"
-                alt="{{ image.alt }}"
-                class="img-fluid rounded"
-                style="width: 120px; height: 100px; object-fit: cover;">
+                                {% if image.isPrincipal %}
+                                    <span class="badge-principal">Principale</span>
+                                {% endif %}
 
-            {% if image.isPrincipal %}
-                <span class="badge bg-primary position-absolute bottom-0 start-0"
-                    style="font-size: 0.7rem;">
-                    Principale
-                </span>
-        {% endif %}
+                                <div class="image-actions">
+                                    {% if not image.isPrincipal %}
+                                        <button type="button"
+                                                class="btn-set-principal"
+                                                data-image-id="{{ image.id }}"
+                                                data-csrf="{{ csrf_token('principal-image-' ~ image.id) }}"
+                                                title="Passer en principale">
+                                            <i class="bi bi-star-fill"></i>
+                                        </button>
+                                    {% endif %}
 
-        <div class="d-flex justify-content-center gap-1 mt-1">
-            {% if not image.isPrincipal %}
-                <button type="button"
-                        class="btn btn-sm btn-primary btn-set-principal"
-                        data-image-id="{{ image.id }}"
-                        data-csrf="{{ csrf_token('principal-image-' ~ image.id) }}"
-                        title="Passer en principale">
-                    <i class="bi bi-star-fill"></i>
-                </button>
-                <button type="button"
-                        class="btn btn-sm btn-danger btn-delete-image"
-                        data-image-id="{{ image.id }}"
-                        data-csrf="{{ csrf_token('delete-image-' ~ image.id) }}"
-                        title="Supprimer">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            {% endif %}
-        </div>
-    </div>
-{% endfor %}
+                                    <button type="button"
+                                            class="btn-delete-image"
+                                            data-image-id="{{ image.id }}"
+                                            data-csrf="{{ csrf_token('delete-image-' ~ image.id) }}"
+                                            title="Supprimer">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             {% endif %}
 
+            {# === Template caché pour clonage JS === #}
+            <template id="upload-template">
+                <div class="upload-field">
+                    <input type="file" name="product[images][]" accept="image/*" class="form-control">
+                    <button type="button" class="btn-remove-upload">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </template>
+
+            {# === Upload images === #}
             <div class="mb-3">
-                {{ form_label(form.images, 'Images', {'label_attr' : {'class': 'form-label'}}) }}
-                {{ form_widget(form.images, {'attr' : {'class' : 'form-control'}}) }}
+                <label class="form-label">Ajouter des images</label>
+                <div id="upload-container">
+                    <div class="upload-field">
+                        {{ form_widget(form.images, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <button type="button" id="add-image-btn" class="btn btn-secondary mt-2">
+                    <i class="bi bi-plus-lg"></i> Ajouter une image
+                </button>
                 {{ form_errors(form.images) }}
             </div>
 
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-{{ product.id  ?  'primary' : 'success' }}">
+                <button type="submit" class="btn btn-{{ product.id ? 'primary' : 'success' }}">
                     {{ product.id ? 'Modifier' : 'Ajouter' }}
                 </button>
             </div>

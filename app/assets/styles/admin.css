@@ -36,6 +36,77 @@
     object-fit: cover;
 }
 
+/* Image principale - bordure */
 .image-principal img {
-    border: 3px solid var(--bs--primary) !important;
+    border: 3px solid var(--bs-primary) !important;
 }
+
+/* Badge "Principale" en overlay */
+.badge-principal {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    background-color: var(--bs-primary);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 2px 8px;
+}
+
+/* Conteneur des images */
+#images-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* Boutons actions sous l'image */
+.image-actions {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.btn-set-principal {
+    background-color: var(--bs-primary);
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-delete-image {
+    background-color: var(--bs-danger);
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-set-principal:hover { filter: brightness(0.9); }
+.btn-delete-image:hover { filter: brightness(0.9); }
+
+.upload-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.upload-field .form-control {
+    flex: 1;
+}
+
+.btn-remove-upload {
+    background-color: var(--bs-danger);
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-remove-upload:hover { filter: brightness(0.9); }

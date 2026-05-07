@@ -24,6 +24,10 @@ return [
         'path' => './assets/js/product.js',
         'entrypoint' => true,
     ],
+    'upload' => [
+        'path' => './assets/js/upload.js',
+        'entrypoint' => true,
+    ],
     '@hotwired/stimulus' => [
         'version' => '3.2.2',
     ],
