@@ -8,6 +8,7 @@ use App\Repository\ImageRepository;
 use App\Repository\ProductRepository;
 use App\Service\ImageHandler;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +37,7 @@ final class AdminProductController extends AbstractController
     }
 
     #[Route('/admin/product/save/{id}', name: 'app_admin_product_save', requirements: ['id' => '\d+'], defaults: ['id' => null])]
-    public function save(Request $request, ?Product $product): Response
+    public function save(Request $request, #[MapEntity] ?Product $product = null): Response
     {
         $product = $product ?? new Product();
         $form = $this->createForm(ProductType::class, $product);
@@ -76,7 +77,8 @@ final class AdminProductController extends AbstractController
     }
 
     #[Route('/admin/image/delete/{id}', name: 'app_admin_image_delete', requirements: ['id' => '\d+'], methods: ['DELETE'])]
-    public function deleteImage(int $id, Request $request): JsonResponse {
+    public function deleteImage(int $id, Request $request): JsonResponse
+    {
         $image = $this->imageRepository->find($id);
 
         if (!$image) {
@@ -95,7 +97,8 @@ final class AdminProductController extends AbstractController
     }
 
     #[Route('/admin/image/principal/{id}', name: 'app_admin_image_principal', requirements: ['id' => '\d+'], methods: ['POST'])]
-    public function setPrincipal(int $id, Request $request): JsonResponse {
+    public function setPrincipal(int $id, Request $request): JsonResponse
+    {
         $image = $this->imageRepository->find($id);
 
         if (!$image) {
@@ -106,12 +109,7 @@ final class AdminProductController extends AbstractController
             return $this->json(['error' => 'Token CSRF invalide'], 403);
         }
 
-        foreach ($image->getProduct()->getImages() as $img) {
-            $img->setIsPrincipal(false);
-        }
-
-        $image->setIsPrincipal(true);
-        $this->em->flush();
+        $this->imageHandler->setPrincipal($image);
 
         return $this->json(['success' => true]);
     }

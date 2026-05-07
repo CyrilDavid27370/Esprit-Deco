@@ -5,13 +5,15 @@ namespace App\Service;
 use App\Entity\Image;
 use App\Entity\Product;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ImageHandler
 {
     public function __construct(
         private string $projectDir,
-        private SluggerInterface $slugger)
+        private SluggerInterface $slugger,
+        private EntityManagerInterface $em)
     {
     }
 
@@ -55,5 +57,15 @@ class ImageHandler
         if (file_exists($imagePath)) {
             unlink($imagePath);
         }
+    }
+
+    public function setPrincipal(Image $image): void
+    {
+        foreach ($image->getProduct()->getImages() as $img) {
+            $img->setIsPrincipal(false);
+        }
+
+        $image->setIsPrincipal(true);
+        $this->em->flush();
     }
 }
