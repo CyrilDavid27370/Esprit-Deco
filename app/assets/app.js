@@ -1,14 +1,14 @@
+import '@hotwired/turbo';
+
 import './stimulus_bootstrap.js';
-/*
- * Welcome to your app's main JavaScript file!
- *
- * This file will be included onto the page via the importmap() Twig function,
- * which should already be in your base.html.twig.
- */
 import './js/bootstrap.js';
 import './js/app.general.js';
 import './js/header.js';
 import './js/nav.js';
 import './js/footer.js';
+
+// Désactive Turbo Drive globalement
+document.addEventListener('turbo:load', () => {});
+window.Turbo?.session && (window.Turbo.session.drive = false);
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
