@@ -1,10 +1,10 @@
-document.addEventListener('turbo:load', () => {
+document.addEventListener('DOMContentLoaded', () => {
 
      // Bouton -
     document.querySelectorAll('.btn-decrease').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = btn.dataset.id;
-            await fetch(`/cart/decrease/${id}`, { method: POST});
+            await fetch(`/cart/decrease/${id}`, { method: 'POST' });
             window.location.reload();
         });
     });
@@ -13,7 +13,7 @@ document.addEventListener('turbo:load', () => {
     document.querySelectorAll('.btn-increase').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = btn.dataset.id;
-            await fetch(`/cart/add/${id}`, { method: POST});
+            await fetch(`/cart/add/${id}`, { method: 'POST' });
             window.location.reload();
         });
     });
@@ -22,7 +22,7 @@ document.addEventListener('turbo:load', () => {
     document.querySelectorAll('.btn-remove').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = btn.dataset.id;
-            await fetch(`/cart/remove/${id}`, { method: POST});
+            await fetch(`/cart/remove/${id}`, { method: 'POST' });
             window.location.reload();
         });
     });
