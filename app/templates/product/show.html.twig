@@ -49,7 +49,11 @@
         {# === Cadre prix + bouton "Ajouter au panier" === #}
         <div class="product-actions">
             <span class="badge price-badge">{{ product.price}} €</span>
-            <button class="btn btn-cart">Ajouter au panier</button>
+        <form action="{{ path('app_cart_add', {'id': product.id}) }}" method="POST">
+            <button type="submit" class="btn btn-cart">
+            Ajouter au panier
+            </button>
+        </form>
         </div>
 
         {# === Bouton retour === #}

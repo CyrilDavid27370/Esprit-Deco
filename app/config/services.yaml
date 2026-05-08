@@ -25,3 +25,5 @@ services:
     App\Service\ImageHandler:
         arguments:
             $projectDir: '%kernel.project_dir%'
+
+
