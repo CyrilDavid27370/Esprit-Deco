@@ -97,5 +97,96 @@ class CartHandler
             'status' => Cart::STATUS_OPEN
         ]);
     }
+    
+    public function addToDb(Product $product): void 
+    {
+        $user = $this->security->getUser();
+        $cart = $this->getCartFromDb();
+
+        // Crée un nouveau panier si l'utilisateur n'en a pas
+        if (!$cart) {
+            $cart = new Cart();
+            $cart->setUser($user);
+            $cart->setStatus(Cart::STATUS_OPEN);
+            $this->em->persist($cart);
+        }
+
+        // Cherche si le produit est déjà dans le panier
+        foreach ($cart->getCartLines() as $cartLine) {
+            if ($cartLine->getProduct() === $product) {
+                $cartLine->setQuantity($cartLine->getQuantity() + 1);
+                $this->em->flush();
+                return;
+            }
+        }
+
+        // Sinon crée une nouvelle ligne
+        $cartLine = new CartLine();
+        $cartLine->setCart($cart);
+        $cartLine->setProduct($product);
+        $cartLine->setQuantity(1);
+        $this->em->persist($cartLine);
+        $this->em->flush();
+    }
+
+    public function getProductQuantity(Product $product): int 
+    {
+        $cart = $this->getCartFromDb();
+        if (!$cart) return 0;
+
+        foreach ($cart->getCartLines() as $cartLine) {
+            if ($cartLine->getProduct() === $product) {
+                return $cartLine->getQuantity();
+            }
+        }
+
+        return 0;
+    }
+
+    public function decreaseInDb(Product $product): int 
+    {
+        $cart = $this->getCartFromDb();
+        if (!$cart) return 0;
+
+        foreach ($cart->getCartLines() as $cartLine) {
+            if ($cartLine->getProduct() === $product) {
+                if ($cartLine->getQuantity() > 1) {
+                    $cartLine->setQuantity($cartLine->getQuantity() - 1);
+                } else {
+                    $this->em->remove($cartLine);
+                }
+
+                $this->em->flush();
+                return $cartLine->getQuantity();
+            }
+        }
+
+        return 0;
+    }
+
+    public function removeFromDb(Product $product): void 
+    {
+        $cart = $this->getCartFromDb();
+        if (!$cart) return;
+
+        foreach ($cart->getCartLines() as $cartLine) {
+            if ($cartLine->getProduct() === $product) {
+                $this->em->remove($cartLine);
+                return;
+            }
+        }
+    }
+
+    public function clearDb(): void 
+    {
+        $cart = $this->getCartFromDb();
+        if (!$cart) return;
+
+        foreach ($cart->getCartLines() as $cartLine) {
+            $this->em->remove($cartLine);
+        }
+
+         $this->em->flush();
+    }
 
 }
