@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Cart;
 use App\Entity\CartLine;
+use App\Entity\Product;
 use App\Repository\CartRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -93,7 +94,7 @@ class CartHandler
         if (!$user) return null;
 
         return $this->cartRepository->findOneBy([
-            'user' => $user,
+            'User' => $user,
             'status' => Cart::STATUS_OPEN
         ]);
     }

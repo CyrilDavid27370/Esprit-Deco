@@ -54,8 +54,14 @@ final class CartController extends AbstractController
     }
 
     #[Route('/cart/decrease/{id}', name: 'app_cart_decrease', requirements: ['id' => '\d+'], methods: ['POST'])]
-    public function decrease(Product $product): Response
-    {
+public function decrease(Product $product): Response
+{   
+    $user = $this->security->getUser();
+
+    if ($user) {
+        $quantity = $this->cartHandler->decreaseInDb($product);
+        $totalQuantity = $this->cartHandler->getTotalQuantity();
+    } else {
         $session = $this->requestStack->getSession();
         $cart = $session->get('cart', []);
         $id = $product->getId();
@@ -69,34 +75,55 @@ final class CartController extends AbstractController
         }
 
         $session->set('cart', $cart);
-        return $this->json([
-            'success' => true,
-            'quantity' => $cart[$id] ?? 0,
-            'totalQuantity' => array_sum($cart)
-        ]);
+        $quantity = $cart[$id] ?? 0;
+        $totalQuantity = array_sum($cart);
     }
 
+    return $this->json([
+        'success' => true,
+        'quantity' => $quantity,
+        'totalQuantity' => $totalQuantity,
+    ]);
+}
+
     #[Route('/cart/remove/{id}', name: 'app_cart_remove', requirements: ['id' => '\d+'], methods: ['POST'])]
-    public function remove(Product $product): Response
-    {
+public function remove(Product $product): Response
+{
+    $user = $this->security->getUser();
+
+    if ($user) {
+        $this->cartHandler->removeFromDb($product);
+        $totalQuantity = $this->cartHandler->getTotalQuantity();
+    } else {
         $session = $this->requestStack->getSession();
         $cart = $session->get('cart', []);
         unset($cart[$product->getId()]);
         $session->set('cart', $cart);
-        return $this->json([
-            'success' => true,
-            'quantity' => 0,
-            'totalQuantity' => array_sum($cart),
-        ]);
+        $totalQuantity = array_sum($cart);
     }
 
-    #[Route('/cart/clear', name: 'app_cart_clear', methods: ['POST'])]
-    public function clear(): Response
-    {
-        $this->requestStack->getSession()->remove('cart');
-        return $this->json([
-            'success' => true,
-            'totalQuantity' => 0,
-        ]);
-    }
+    return $this->json([
+        'success' => true,
+        'quantity' => 0,
+        'totalQuantity' => $totalQuantity,
+    ]);
 }
+
+#[Route('/cart/clear', name: 'app_cart_clear', methods: ['POST'])]
+public function clear(): Response
+{
+    $user = $this->security->getUser();
+
+    if ($user) {
+        $this->cartHandler->clearDb();
+    } else {
+        $this->requestStack->getSession()->remove('cart');
+    }
+
+    return $this->json([
+        'success' => true,
+        'totalQuantity' => 0,
+    ]);
+}
+}
+        
