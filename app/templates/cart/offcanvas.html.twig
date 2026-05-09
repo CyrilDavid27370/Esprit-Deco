@@ -15,9 +15,9 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span style="flex: 1">{{ item.product.title }} ({{ item.product.price }} €)</span>
                         <div class="d-flex align-items-center gap-2" style="min-width: 180px; justify-content: flex-end">
-                        <button class="btn btn-primary btn-sm rounded-circle">-</button>
+                        <button class="btn btn-primary btn-sm rounded-circle btn-decrease" data-id="{{ item.product.id }}">-</button>
                         <span class="badge bg-primary">{{ item.quantity }}</span>
-                        <button class="btn btn-primary btn-sm rounded-circle">+</button>
+                        <button class="btn btn-primary btn-sm rounded-circle btn-increase" data-id="{{ item.product.id }}">+</button>
                         <span style="min-width: 60px; text-align: right">{{ item.subtotal }} €</span>
                         </div>
                     </li>
@@ -30,9 +30,9 @@
                     <span>{{ cart_handler.cart.total }} €</span>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <a href="#" class="btn btn-danger btn-sm">
+                    <button class="btn btn-danger btn-sm btn-clear">
                         <i class="bi bi-trash"></i> Vider le panier
-                    </a>
+                    </button>
                     <a href="#" class="btn btn-primary">Payer</a>
                 </div>
             </div>

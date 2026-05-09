@@ -10,6 +10,7 @@
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
+            {{ importmap('cart') }}
         {% endblock %}
     </head>
     <body class="d-flex flex-column min-vh-100">
