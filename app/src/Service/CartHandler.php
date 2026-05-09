@@ -22,35 +22,69 @@ class CartHandler
 
     public function getCart(): array
     {
-        $session = $this->requestStack->getSession();
-        $cart = $session->get('cart', []);
+        return $this->security->getUser()
+        ? $this->getCartFromDbFormatted()
+        : $this->getCartFromSession();
+    }
+
+    private function getCartFromDbFormatted(): array 
+    {
+        $cart = $this->getCartFromDb();
+        if (!$cart) return ['items' => [], 'total' => 0];
+
+        $items = [];
+        $total = 0;
+
+        foreach ($cart->getCartLines() as $cartLine) {
+            $product = $cartLine->getProduct();
+            $quantity = $cartLine->getQuantity();
+            $subtotal = $product->getPrice() * $quantity;
+            $total += $subtotal;
+            $items[] = [
+                'product' => $product,
+                'quantity' => $quantity,
+                'subtotal' => $subtotal
+            ];
+        }
+            return ['items' => $items, 'total' => $total];
+    }
+
+    private function getCartFromSession(): array 
+    {
+        $cart = $this->requestStack->getSession()->get('cart', []);
         $items = [];
         $total = 0;
 
         foreach ($cart as $productId => $quantity) {
             $product = $this->productRepository->find($productId);
             if (!$product) continue;
-
             $subtotal = $product->getPrice() * $quantity;
             $total += $subtotal;
-
             $items[] = [
                 'product' => $product,
                 'quantity' => $quantity,
-                'subtotal' => $subtotal,
+                'subtotal' => $subtotal
             ];
         }
 
-        return [
-            'items' => $items,
-            'total' => $total,
-        ];
+        return ['items' => $items, 'total' => $total];
     }
 
     public function getTotalQuantity(): int
     {
-    $cart = $this->requestStack->getSession()->get('cart', []);
-    return array_sum($cart);
+    $user = $this->security->getUser();
+
+    if ($user) {
+        $cart = $this->getCartFromDb();
+        if (!$cart) return 0;
+        $total = 0;
+        foreach ($cart->getCartLines() as $cartLine) {
+            $total += $cartLine->getQuantity();
+        }
+        return $total;
+    }
+
+    return array_sum($this->requestStack->getSession()->get('cart', []));
     }
 
     public function getCartFromDb(): ?Cart
