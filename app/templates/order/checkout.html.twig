@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Adresse de livraison -EspritDéco{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6">
+            <h2 class="text-center mb-4">Adresse de livraison</h2>
+
+            {{ form_start(form, {'attr': {'data-turbo' : 'false'}}) }}
+            
+            <div class="mb-3">
+                {{ form_label(form.fullname, 'Nom et Prénom', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.fullname, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.fullname) }}
+            </div> 
+
+            <div class="mb-3">
+                {{ form_label(form.street, 'Rue', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.street, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.street) }} 
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.zipCode, 'Code Postal', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.zipCode, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.zipCode) }} 
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.city, 'Ville', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.city, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.city) }}
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
