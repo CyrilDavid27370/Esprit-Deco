@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Order;
-use App\Form\AdressType;
+use App\Form\AddressType;
 use App\Service\CartHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,11 +24,11 @@ final class OrderController extends AbstractController
     #[Route('/order/checkout', name: 'app_order_checkout')]
     public function checkout(Request $request): Response
     {   
-        $form = $this->createForm(AdressType::class);
+        $form = $this->createForm(AddressType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $adress = $form->getData();
+            $address = $form->getData();
 
             // Créer la commande
             $order = new Order();
@@ -37,11 +37,11 @@ final class OrderController extends AbstractController
             $order->setTotalAmount($this->cartHandler->getCart() ['total']);
 
             // Associer l'adresse à la commande
-            $adress->setOrderRef($order);
+            $address->setOrderRef($order);
 
             // Persister la commande et l'adresse
             $this->em->persist($order);
-            $this->em->persist($adress);
+            $this->em->persist($address);
             $this->em->flush();
 
             return $this->redirectToRoute('app_order_confirm', ['id' => $order->getId()]);

@@ -42,7 +42,7 @@ class Order
     private Collection $orderLines;
 
     #[ORM\OneToOne(mappedBy: 'orderRef', cascade: ['persist', 'remove'])]
-    private ?Adress $adress = null;
+    private ?Address $address = null;
 
     public function __construct()
     {
@@ -133,19 +133,19 @@ class Order
         return $this;
     }
 
-    public function getAdress(): ?Adress
+    public function getAddress(): ?Address
     {
-        return $this->adress;
+        return $this->address;
     }
 
-    public function setAdress(Adress $adress): static
+    public function setAddress(Address $address): static
     {
         // set the owning side of the relation if necessary
-        if ($adress->getOrderRef() !== $this) {
-            $adress->setOrderRef($this);
+        if ($address->getOrderRef() !== $this) {
+            $address->setOrderRef($this);
         }
 
-        $this->adress = $adress;
+        $this->address = $address;
 
         return $this;
     }

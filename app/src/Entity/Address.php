@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\AdressRepository;
+use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: AdressRepository::class)]
-class Adress
+#[ORM\Entity(repositoryClass: AddressRepository::class)]
+class Address
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -25,7 +25,7 @@ class Adress
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
-    #[ORM\OneToOne(inversedBy: 'adress', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'address', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Order $orderRef = null;
 
