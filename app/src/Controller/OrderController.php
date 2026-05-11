@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Address;
 use App\Entity\Order;
 use App\Form\AddressType;
 use App\Service\CartHandler;
@@ -14,41 +15,60 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_USER')]
 final class OrderController extends AbstractController
-{   
+{
     public function __construct(
         private CartHandler $cartHandler,
         private EntityManagerInterface $em
-    )
+    ) {}
+
+    #[Route('/order/checkout/{id}', name: 'app_order_checkout', defaults: ['id' => null])]
+    public function checkout(Request $request, ?Address $address = null): Response
     {
-    }
-    #[Route('/order/checkout', name: 'app_order_checkout')]
-    public function checkout(Request $request): Response
-    {   
-        $form = $this->createForm(AddressType::class);
+        $newAddress = $address === null;
+        $address = $address ?? new Address();
+
+        $form = $this->createForm(AddressType::class, $address);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $address = $form->getData();
+            if ($newAddress) {
+                $existingOrder = $this->em->getRepository(Order::class)->findOneBy([
+                    'user' => $this->getUser(),
+                    'status' => Order::STATUS_PENDING_PAYMENT,
+                ]);
 
-            // Créer la commande
-            $order = new Order();
-            $order->setUser($this->getUser());
-            $order->setStatus(Order::STATUS_PENDING_PAYMENT);
-            $order->setTotalAmount($this->cartHandler->getCart() ['total']);
+                if ($existingOrder && $existingOrder->getAddress()) {
+                    return $this->redirectToRoute('app_order_confirm', ['id' => $existingOrder->getId()]);
+                }
 
-            // Associer l'adresse à la commande
-            $address->setOrderRef($order);
+                if ($existingOrder) {
+                    $order = $existingOrder;
+                    $order->setTotalAmount($this->cartHandler->getCart()['total']);
+                } else {
+                    $order = new Order();
+                    $order->setUser($this->getUser());
+                    $order->setStatus(Order::STATUS_PENDING_PAYMENT);
+                    $order->setTotalAmount($this->cartHandler->getCart()['total']);
+                    $this->em->persist($order);
+                }
 
-            // Persister la commande et l'adresse
-            $this->em->persist($order);
+                $address->setOrderRef($order);
+            }
+
             $this->em->persist($address);
             $this->em->flush();
+
+            $order = $address->getOrderRef();
+            if (!$order) {
+                $this->em->refresh($address);
+                $order = $address->getOrderRef();
+            }
 
             return $this->redirectToRoute('app_order_confirm', ['id' => $order->getId()]);
         }
 
-            return $this->render('order/checkout.html.twig', [
-                'form' => $form,
+        return $this->render('order/checkout.html.twig', [
+            'form' => $form,
         ]);
     }
 

@@ -43,7 +43,7 @@
 
             {# Boutons #}
             <div class="d-flex justify-content-between">
-                <a href="{{ path('app_order_checkout') }}" class="btn btn-secondary">
+                <a href="{{ path('app_order_checkout', {'id': order.address.id}) }}" class="btn btn-secondary">
                     Modifier l'adresse
                 </a>
                 <a href="#" class="btn btn-primary">
