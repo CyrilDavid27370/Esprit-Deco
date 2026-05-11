@@ -44,7 +44,7 @@ final class OrderController extends AbstractController
             $this->em->persist($adress);
             $this->em->flush();
 
-            return $this->redirectToRoute('app_order_confirm', ['id' => $order->getId()]);
+            return $this->redirectToRoute('app_home');
         }
 
             return $this->render('order/checkout.html.twig', [
