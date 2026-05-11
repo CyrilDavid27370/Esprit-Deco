@@ -25,6 +25,10 @@ class Adress
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
+    #[ORM\OneToOne(inversedBy: 'adress', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Order $orderRef = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +78,18 @@ class Adress
     public function setCity(string $city): static
     {
         $this->city = $city;
+
+        return $this;
+    }
+
+    public function getOrderRef(): ?Order
+    {
+        return $this->orderRef;
+    }
+
+    public function setOrderRef(Order $orderRef): static
+    {
+        $this->orderRef = $orderRef;
 
         return $this;
     }

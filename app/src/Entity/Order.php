@@ -41,6 +41,9 @@ class Order
     #[ORM\OneToMany(targetEntity: OrderLine::class, mappedBy: 'myOrder', orphanRemoval: true)]
     private Collection $orderLines;
 
+    #[ORM\OneToOne(mappedBy: 'orderRef', cascade: ['persist', 'remove'])]
+    private ?Adress $adress = null;
+
     public function __construct()
     {
         $this->orderLines = new ArrayCollection();
@@ -126,6 +129,23 @@ class Order
                 $orderLine->setMyOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAdress(): ?Adress
+    {
+        return $this->adress;
+    }
+
+    public function setAdress(Adress $adress): static
+    {
+        // set the owning side of the relation if necessary
+        if ($adress->getOrderRef() !== $this) {
+            $adress->setOrderRef($this);
+        }
+
+        $this->adress = $adress;
 
         return $this;
     }
