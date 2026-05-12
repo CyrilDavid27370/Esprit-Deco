@@ -32,29 +32,20 @@ final class OrderController extends AbstractController
     #[Route('/order/checkout/{id}', name: 'app_order_checkout', defaults: ['id' => null])]
     public function checkout(Request $request, ?Address $address = null): Response
     {
-        $newAddress = $address === null;
-        $address = $address ?? new Address();
+    $address = $address ?? new Address();
 
-        $form = $this->createForm(AddressType::class);
-        $form->handleRequest($request);
+    $form = $this->createForm(AddressType::class, $address);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($newAddress) {
-                $address = $form->getData();
-                $order = $this->orderHandler->handleCheckout($address, $this->cartHandler->getCart()['total']);
-            } else {
-                $this->em->persist($address);
-                $this->em->flush();
-                $order = $address->getOrderRef();
-            }
-            return $this->redirectToRoute('app_order_confirm', ['id' => $order->getId()]);
-        }
-
-        return $this->render('order/checkout.html.twig', [
-            'form' => $form,
-        ]);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $order = $this->orderHandler->handleCheckout($address, $this->cartHandler->getCart()['total']);
+        return $this->redirectToRoute('app_order_confirm', ['id' => $order->getId()]);
     }
 
+    return $this->render('order/checkout.html.twig', [
+        'form' => $form,
+    ]);
+}
     #[Route('/order/confirm/{id}', name: 'app_order_confirm')]
     public function confirm(Order $order): Response
     {
