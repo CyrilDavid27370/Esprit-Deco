@@ -16,14 +16,19 @@ final class ProductController extends AbstractController
     {
         $categoryId = $request->query->getInt('category') ?: null;
 
-        $products = $categoryId
-            ? $productRepository->findByCategoryWithPrincipalImage($categoryId)
-            : $productRepository->findAllWithCategoryAndPrincipalImage();
+        $minPriceRaw = $request->query->get('minPrice');
+        $maxPriceRaw = $request->query->get('maxPrice');
+        $minPrice = ($minPriceRaw !== null && $minPriceRaw !== '') ? (float) $minPriceRaw : null;
+        $maxPrice = ($maxPriceRaw !== null && $maxPriceRaw !== '') ? (float) $maxPriceRaw : null;
+
+        $products = $productRepository->findWithFilters($categoryId, $minPrice, $maxPrice);
 
         return $this->render('product/index.html.twig', [
             'products' => $products,
             'categories' => $categoryRepository->findAll(),
             'selectedCategory' => $categoryId,
+            'minPrice' => $minPrice,
+            'maxPrice' => $maxPrice,
         ]);
     }
 
