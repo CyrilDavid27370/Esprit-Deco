@@ -178,7 +178,7 @@ class CartHandler
         }
     }
 
-    public function clearDb(): void 
+    public function clearDb(): void
     {
         $cart = $this->getCartFromDb();
         if (!$cart) return;
@@ -187,6 +187,19 @@ class CartHandler
             $this->em->remove($cartLine);
         }
 
+        $this->em->flush();
+    }
+
+    public function convertCart(): void
+    {
+        $cart = $this->getCartFromDb();
+        if (!$cart) return;
+
+        foreach ($cart->getCartLines() as $cartLine) {
+            $this->em->remove($cartLine);
+        }
+
+        $cart->setStatus(Cart::STATUS_CONVERTED);
         $this->em->flush();
     }
 
