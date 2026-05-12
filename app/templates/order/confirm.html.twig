@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Validation de la commande - EspritDéco{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8">
+            <h2 class="text-center mb-4">Validation de la commande</h2>
+
+            {# Récapitulatif des produits #}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Récapitulatif de votre commande</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        {% for item in cart_handler.cart.items %}
+                            <tr>
+                                <td>{{ item.product.title }}</td>
+                                <td>{{ item.quantity }} x {{ item.product.price }} €</td>
+                                <td class="text-end">{{ item.subtotal }} €</td>
+                            </tr>
+                        {% endfor %}
+                        <tr class="fw-bold">
+                            <td colspan="2">TOTAL</td>
+                            <td class="text-end">{{ order.totalAmount }} €</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            {# Adresse de livraison #}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Adresse de livraison</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ order.address.fullname }}</p>
+                    <p>{{ order.address.street }}</p>
+                    <p>{{ order.address.zipCode }} {{ order.address.city }}</p>
+                </div>
+            </div>
+
+            {# Boutons #}
+            <div class="d-flex justify-content-between">
+                <a href="{{ path('app_order_checkout', {'id': order.address.id}) }}" class="btn btn-secondary">
+                    Modifier l'adresse
+                </a>
+                <a href="#" class="btn btn-primary">
+                    Confirmer
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

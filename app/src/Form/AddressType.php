@@ -2,12 +2,12 @@
 
 namespace App\Form;
 
-use App\Entity\Adress;
+use App\Entity\Address;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AdressType extends AbstractType
+class AddressType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -22,7 +22,7 @@ class AdressType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Adress::class,
+            'data_class' => Address::class,
         ]);
     }
 }
