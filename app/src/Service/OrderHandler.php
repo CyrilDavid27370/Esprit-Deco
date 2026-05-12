@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Address;
 use App\Entity\Order;
+use App\Entity\OrderLine;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -45,5 +46,20 @@ class OrderHandler
         $this->em->flush();
 
         return $order;
+    }
+
+    public function finalizeOrder(Order $order, array $cartItems): void
+    {
+        foreach ($cartItems as $item) {
+            $orderLine = new OrderLine();
+            $orderLine->setMyOrder($order);
+            $orderLine->setProduct($item['product']);
+            $orderLine->setQuantity($item['quantity']);
+            $orderLine->setUnitPrice($item['product']->getPrice());
+            $this->em->persist($orderLine);
+        }
+
+        $order->setStatus(Order::STATUS_PAID);
+        $this->em->flush();
     }
 }
