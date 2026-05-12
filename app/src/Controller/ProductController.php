@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,12 +12,18 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ProductController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function index(ProductRepository $productRepository): Response
+    public function index(Request $request, ProductRepository $productRepository, CategoryRepository $categoryRepository): Response
     {
-        $products = $productRepository->findAllWithCategoryAndPrincipalImage();
+        $categoryId = $request->query->getInt('category') ?: null;
+
+        $products = $categoryId
+            ? $productRepository->findByCategoryWithPrincipalImage($categoryId)
+            : $productRepository->findAllWithCategoryAndPrincipalImage();
 
         return $this->render('product/index.html.twig', [
             'products' => $products,
+            'categories' => $categoryRepository->findAll(),
+            'selectedCategory' => $categoryId,
         ]);
     }
 
