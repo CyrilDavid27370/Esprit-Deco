@@ -187,7 +187,7 @@ class CartHandler
             $this->em->remove($cartLine);
         }
 
-         $this->em->flush();
+        $this->em->flush();
     }
 
 }
