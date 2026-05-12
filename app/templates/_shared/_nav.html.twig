@@ -52,8 +52,19 @@
 
     <div class="d-flex align-items-center gap-2">
     {# Barre de recherche #}
-        <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Recherche" aria-label="Recherche">
+        <form class="d-flex" role="search" method="get" action="{{ path('app_home') }}">
+            {% if app.request.query.get('category') %}
+                <input type="hidden" name="category" value="{{ app.request.query.get('category') }}">
+            {% endif %}
+            {% if app.request.query.get('minPrice') %}
+                <input type="hidden" name="minPrice" value="{{ app.request.query.get('minPrice') }}">
+            {% endif %}
+            {% if app.request.query.get('maxPrice') %}
+                <input type="hidden" name="maxPrice" value="{{ app.request.query.get('maxPrice') }}">
+            {% endif %}
+            <input class="form-control me-2" type="search" name="search"
+                   value="{{ app.request.query.get('search') ?? '' }}"
+                   placeholder="Recherche" aria-label="Recherche">
             <button class="btn btn-search" type="submit">
                 <i class="bi bi-search"></i>
             </button>

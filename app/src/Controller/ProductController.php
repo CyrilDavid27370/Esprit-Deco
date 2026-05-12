@@ -21,7 +21,10 @@ final class ProductController extends AbstractController
         $minPrice = ($minPriceRaw !== null && $minPriceRaw !== '') ? (float) $minPriceRaw : null;
         $maxPrice = ($maxPriceRaw !== null && $maxPriceRaw !== '') ? (float) $maxPriceRaw : null;
 
-        $products = $productRepository->findWithFilters($categoryId, $minPrice, $maxPrice);
+        $searchRaw = $request->query->get('search');
+        $search = ($searchRaw !== null && $searchRaw !== '') ? trim($searchRaw) : null;
+
+        $products = $productRepository->findWithFilters($categoryId, $minPrice, $maxPrice, $search);
 
         return $this->render('product/index.html.twig', [
             'products' => $products,
@@ -29,6 +32,7 @@ final class ProductController extends AbstractController
             'selectedCategory' => $categoryId,
             'minPrice' => $minPrice,
             'maxPrice' => $maxPrice,
+            'search' => $search,
         ]);
     }
 
