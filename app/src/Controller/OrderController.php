@@ -6,6 +6,7 @@ use App\Entity\Address;
 use App\Entity\Order;
 use App\Form\AddressType;
 use App\Service\CartHandler;
+use App\Service\OrderHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +19,8 @@ final class OrderController extends AbstractController
 {
     public function __construct(
         private CartHandler $cartHandler,
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
+        private OrderHandler $orderHandler
     ) {}
 
     #[Route('/order/checkout/{id}', name: 'app_order_checkout', defaults: ['id' => null])]
@@ -32,38 +34,13 @@ final class OrderController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($newAddress) {
-                $existingOrder = $this->em->getRepository(Order::class)->findOneBy([
-                    'user' => $this->getUser(),
-                    'status' => Order::STATUS_PENDING_PAYMENT,
-                ]);
-
-                if ($existingOrder && $existingOrder->getAddress()) {
-                    return $this->redirectToRoute('app_order_confirm', ['id' => $existingOrder->getId()]);
-                }
-
-                if ($existingOrder) {
-                    $order = $existingOrder;
-                    $order->setTotalAmount($this->cartHandler->getCart()['total']);
-                } else {
-                    $order = new Order();
-                    $order->setUser($this->getUser());
-                    $order->setStatus(Order::STATUS_PENDING_PAYMENT);
-                    $order->setTotalAmount($this->cartHandler->getCart()['total']);
-                    $this->em->persist($order);
-                }
-
-                $address->setOrderRef($order);
-            }
-
-            $this->em->persist($address);
-            $this->em->flush();
-
-            $order = $address->getOrderRef();
-            if (!$order) {
-                $this->em->refresh($address);
+                $address = $form->getData();
+                $order = $this->orderHandler->handleCheckout($address, $this->cartHandler->getCart()['total']);
+            } else {
+                $this->em->persist($address);
+                $this->em->flush();
                 $order = $address->getOrderRef();
-            }
-
+    }
             return $this->redirectToRoute('app_order_confirm', ['id' => $order->getId()]);
         }
 
