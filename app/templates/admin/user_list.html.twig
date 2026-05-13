@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des utilisateurs - EspritDéco{% endblock %}
+
+{% block body %}
+    <h2 class="text-center mb-4">Gestion des utilisateurs</h2>
+
+    <div class="table-responsive">
+        <table class="table table-admin">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Vérifié</th>
+                    <th>Commandes</th>
+                    <th>Modifier rôle</th>
+                    <th>Supprimer</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    {% set is_self = user == current_user %}
+                    {% set has_orders = user.orders is not empty %}
+                    <tr>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if 'ROLE_ADMIN' in user.roles %}
+                                <span class="badge bg-danger">Admin</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Utilisateur</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.verified %}
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                            {% else %}
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.orders|length }}</td>
+                        <td>
+                            {% if is_self %}
+                                <button class="btn btn-sm btn-primary" disabled title="Action impossible sur votre propre compte">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </button>
+                            {% else %}
+                                <a href="{{ path('app_admin_user_role', {id: user.id}) }}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if is_self or has_orders %}
+                                <button class="btn btn-sm btn-danger" disabled
+                                    title="{{ is_self ? 'Action impossible sur votre propre compte' : 'Utilisateur avec des commandes' }}">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            {% else %}
+                                <button type="button" class="btn btn-sm btn-danger"
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal{{ user.id }}">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+
+                                <div class="modal fade" id="deleteModal{{ user.id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h2 class="modal-title">Suppression</h2>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Êtes-vous sûr de vouloir supprimer <strong>{{ user.email }}</strong> ?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                <form action="{{ path('app_admin_user_delete', {id: user.id}) }}" method="post">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ user.id) }}">
+                                                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">Aucun utilisateur enregistré.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-3">
+        <a href="{{ path('app_admin') }}" class="btn btn-primary">Retour</a>
+    </div>
+{% endblock %}
