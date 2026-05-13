@@ -22,7 +22,7 @@ final class AdminUserController extends AbstractController
     ) {}
 
     #[Route('/admin/user', name: 'app_admin_user_list')]
-    public function user_list(): Response
+    public function userList(): Response
     {
         $users = $this->userRepository->findAll();
 
