@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le statut - Commande #{{ order.id }} - EspritDéco{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6">
+
+            <h2 class="text-center mb-4">Modifier le statut</h2>
+
+            <div class="mb-4 p-3 border rounded text-muted small">
+                <div><strong>Commande :</strong> #{{ order.id }}</div>
+                <div><strong>Client :</strong> {{ order.user.email }}</div>
+                <div><strong>Date :</strong> {{ order.createdAt|date('d/m/Y') }}</div>
+                <div><strong>Montant :</strong> {{ order.totalAmount|number_format(2, ',', ' ') }} €</div>
+            </div>
+
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+
+            <div class="mb-3">
+                {{ form_label(form.status, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.status, {'attr': {'class': 'form-select'}}) }}
+                {{ form_errors(form.status) }}
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+
+            {{ form_end(form) }}
+
+            <div class="text-center mt-3">
+                <a href="{{ path('app_admin_order_list') }}" class="btn btn-primary">Retour</a>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
