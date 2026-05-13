@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des catégories - EspritDéco{% endblock %}
+
+{% block body %}
+    <h2 class="text-center mb-4">Gestion des catégories</h2>
+
+    {# Bouton ajouter #}
+    <div class="text-center mb-3">
+        <a href="{{ path('app_admin_category_save') }}" class="btn btn-success">
+            <i class="bi bi-plus-lg"></i>
+        </a>
+    </div>
+
+    {# Tableau des catégories #}
+    <div class="table-responsive">
+        <table class="table table-admin">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Couleur</th>
+                    <th>Produits</th>
+                    <th>Modifier</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in categories %}
+                    <tr>
+                        <td>{{ category.name }}</td>
+                        <td>
+                            <span class="d-inline-block rounded" style="width: 24px; height: 24px; background-color: {{ category.color }};"></span>
+                            {{ category.color }}
+                        </td>
+                        <td>{{ category.products|length }}</td>
+                        <td>
+                            <a href="{{ path('app_admin_category_save', {id: category.id}) }}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">Aucune catégorie enregistrée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {# Bouton retour #}
+    <div class="text-center mt-3">
+        <a href="{{ path('app_admin') }}" class="btn btn-primary">Retour</a>
+    </div>
+{% endblock %}
