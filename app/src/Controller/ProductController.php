@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,8 +12,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class ProductController extends AbstractController
 {
+    private const PRODUCTS_PER_PAGE = 9;
+
     #[Route('/', name: 'app_home')]
-    public function index(Request $request, ProductRepository $productRepository, CategoryRepository $categoryRepository): Response
+    public function index(Request $request, ProductRepository $productRepository, CategoryRepository $categoryRepository, PaginatorInterface $paginator): Response
     {
         $categoryId = $request->query->getInt('category') ?: null;
 
@@ -24,15 +27,19 @@ final class ProductController extends AbstractController
         $searchRaw = $request->query->get('search');
         $search = ($searchRaw !== null && $searchRaw !== '') ? trim($searchRaw) : null;
 
-        $products = $productRepository->findWithFilters($categoryId, $minPrice, $maxPrice, $search);
+        $page = max(1, $request->query->getInt('page', 1));
+
+        $queryBuilder = $productRepository->findWithFilters($categoryId, $minPrice, $maxPrice, $search);
+
+        $products = $paginator->paginate($queryBuilder, $page, self::PRODUCTS_PER_PAGE);
 
         return $this->render('product/index.html.twig', [
-            'products' => $products,
-            'categories' => $categoryRepository->findAll(),
+            'products'         => $products,
+            'categories'       => $categoryRepository->findAll(),
             'selectedCategory' => $categoryId,
-            'minPrice' => $minPrice,
-            'maxPrice' => $maxPrice,
-            'search' => $search,
+            'minPrice'         => $minPrice,
+            'maxPrice'         => $maxPrice,
+            'search'           => $search,
         ]);
     }
 

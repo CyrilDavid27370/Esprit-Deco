@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\UserRoleType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,15 +17,19 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 final class AdminUserController extends AbstractController
 {
+    private const ITEMS_PER_PAGE = 10;
+
     public function __construct(
         private UserRepository $userRepository,
         private EntityManagerInterface $em,
     ) {}
 
     #[Route('/admin/user', name: 'app_admin_user_list')]
-    public function userList(): Response
+    public function userList(Request $request, PaginatorInterface $paginator): Response
     {
-        $users = $this->userRepository->findAll();
+        $page = max(1, $request->query->getInt('page', 1));
+        $queryBuilder = $this->userRepository->createAdminUserListQueryBuilder();
+        $users = $paginator->paginate($queryBuilder, $page, self::ITEMS_PER_PAGE);
 
         return $this->render('admin/user_list.html.twig', [
             'users' => $users,
