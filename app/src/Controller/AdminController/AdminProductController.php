@@ -27,7 +27,7 @@ final class AdminProductController extends AbstractController
     ) {}
 
     #[Route('/admin/product', name: 'app_admin_product_list')]
-    public function product_list(): Response
+    public function productList(): Response
     {
         $products = $this->productRepository->findAllWithCategory();
 

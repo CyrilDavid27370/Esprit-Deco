@@ -22,7 +22,7 @@ final class AdminCategoryController extends AbstractController
     ) {}
 
     #[Route('/admin/category', name: 'app_admin_category_list')]
-    public function category_list(): Response
+    public function categoryList(): Response
     {
         $categories = $this->categoryRepository->findAll();
 

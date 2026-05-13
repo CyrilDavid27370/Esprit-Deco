@@ -22,7 +22,7 @@ final class AdminOrderController extends AbstractController
     ) {}
 
     #[Route('/admin/order', name: 'app_admin_order_list')]
-    public function order_list(): Response
+    public function orderList(): Response
     {
         $orders = $this->orderRepository->findAllOrderedByDate();
 
