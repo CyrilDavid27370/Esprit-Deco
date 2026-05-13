@@ -32,6 +32,9 @@
                         <span class="nav-link">
                             <i class="bi bi-person-circle"></i> {{ app.user.email }}
                         </span>
+                        <a class="btn btn-outline-secondary btn-sm" href="{{ path('app_profile') }}">
+                            <i class="bi bi-person-lines-fill"></i> Mon profil
+                        </a>
                         <a class="btn btn-primary btn-sm" href="{{ path('app_logout') }}">
                             <i class="bi bi-box-arrow-right"></i> Déconnexion
                         </a>

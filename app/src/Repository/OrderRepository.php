@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Order;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -27,6 +28,36 @@ class OrderRepository extends ServiceEntityRepository
             ->orderBy('o.createdAt', 'DESC')
             ->getQuery()
             ->getResult()
+        ;
+    }
+
+    /**
+     * @return Order[]
+     */
+    public function findByUserOrderedByDate(User $user): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('o.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findOneWithDetails(int $id): ?Order
+    {
+        return $this->createQueryBuilder('o')
+            ->leftJoin('o.address', 'a')
+            ->addSelect('a')
+            ->leftJoin('o.orderLines', 'ol')
+            ->addSelect('ol')
+            ->leftJoin('ol.product', 'p')
+            ->addSelect('p')
+            ->andWhere('o.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult()
         ;
     }
 }

@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande #{{ order.id }} - EspritDéco{% endblock %}
+
+{% block body %}
+    {% set badge = {
+        'pending_payment': 'warning',
+        'paid':            'info',
+        'shipped':         'primary',
+        'delivered':       'success',
+        'cancelled':       'danger'
+    } %}
+    {% set label = {
+        'pending_payment': 'En attente de paiement',
+        'paid':            'Payé',
+        'shipped':         'Expédié',
+        'delivered':       'Livré',
+        'cancelled':       'Annulé'
+    } %}
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+
+            <h2 class="text-center mb-1">Commande #{{ order.id }}</h2>
+            <p class="text-center text-muted mb-4">
+                Passée le {{ order.createdAt|date('d/m/Y') }} —
+                <span class="badge bg-{{ badge[order.status] ?? 'secondary' }}">
+                    {{ label[order.status] ?? order.status }}
+                </span>
+            </p>
+
+            {# === Lignes de commande === #}
+            <h5 class="mb-3">Articles commandés</h5>
+            <div class="table-responsive mb-4">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th class="text-center">Quantité</th>
+                            <th class="text-end">Prix unitaire</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for line in order.orderLines %}
+                            <tr>
+                                <td>{{ line.product.title }}</td>
+                                <td class="text-center">{{ line.quantity }}</td>
+                                <td class="text-end">{{ line.unitPrice|number_format(2, ',', ' ') }} €</td>
+                                <td class="text-end">{{ (line.unitPrice * line.quantity)|number_format(2, ',', ' ') }} €</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">Aucun article dans cette commande.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end fw-bold">Total</td>
+                            <td class="text-end fw-bold">{{ order.totalAmount|number_format(2, ',', ' ') }} €</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            {# === Adresse de livraison === #}
+            <h5 class="mb-3">Adresse de livraison</h5>
+            {% if order.address %}
+                <div class="p-3 border rounded mb-4">
+                    <div>{{ order.address.fullname }}</div>
+                    <div>{{ order.address.street }}</div>
+                    <div>{{ order.address.zipCode }} {{ order.address.city }}</div>
+                </div>
+            {% else %}
+                <p class="text-muted mb-4">Aucune adresse de livraison enregistrée pour cette commande.</p>
+            {% endif %}
+
+            {# === Retour profil === #}
+            <div class="text-center mt-2">
+                <a href="{{ path('app_profile') }}" class="btn btn-primary">
+                    <i class="bi bi-arrow-left"></i> Retour à mon profil
+                </a>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
