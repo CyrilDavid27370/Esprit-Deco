@@ -67,6 +67,14 @@ class ProductRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function createAdminProductListQueryBuilder(): QueryBuilder
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.category', 'c')
+            ->addSelect('c')
+            ->orderBy('p.id', 'ASC');
+    }
+
     public function findWithFilters(?int $categoryId, ?float $minPrice, ?float $maxPrice, ?string $search = null): QueryBuilder
     {
         $qb = $this->createQueryBuilder('p')

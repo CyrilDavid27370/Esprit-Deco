@@ -8,6 +8,7 @@ use App\Repository\ImageRepository;
 use App\Repository\ProductRepository;
 use App\Service\ImageHandler;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,6 +20,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 final class AdminProductController extends AbstractController
 {
+    private const ITEMS_PER_PAGE = 10;
+
     public function __construct(
         private ProductRepository $productRepository,
         private ImageRepository $imageRepository,
@@ -27,9 +30,11 @@ final class AdminProductController extends AbstractController
     ) {}
 
     #[Route('/admin/product', name: 'app_admin_product_list')]
-    public function productList(): Response
+    public function productList(Request $request, PaginatorInterface $paginator): Response
     {
-        $products = $this->productRepository->findAllWithCategory();
+        $page = max(1, $request->query->getInt('page', 1));
+        $queryBuilder = $this->productRepository->createAdminProductListQueryBuilder();
+        $products = $paginator->paginate($queryBuilder, $page, self::ITEMS_PER_PAGE);
 
         return $this->render('admin/product_list.html.twig', [
             'products' => $products,
