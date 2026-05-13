@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ category.id ? 'Modifier' : 'Ajouter' }} une catégorie - EspritDéco{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6">
+
+            <h2 class="text-center mb-4">{{ category.id ? 'Modifier' : 'Ajouter' }} une catégorie</h2>
+
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+
+            <div class="mb-3">
+                {{ form_label(form.name, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.name) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.color, 'Couleur', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.color, {'attr': {'class': 'form-control form-control-color'}}) }}
+                {{ form_errors(form.color) }}
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-{{ category.id ? 'primary' : 'success' }}">
+                    {{ category.id ? 'Modifier' : 'Ajouter' }}
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+
+            <div class="text-center mt-3">
+                <a href="{{ path('app_admin_category_list') }}" class="btn btn-primary">Retour</a>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

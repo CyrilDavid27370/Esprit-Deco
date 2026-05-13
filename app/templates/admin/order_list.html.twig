@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des commandes - EspritDéco{% endblock %}
+
+{% block body %}
+    <h2 class="text-center mb-4">Gestion des commandes</h2>
+
+    <div class="table-responsive">
+        <table class="table table-admin">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Client</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th>Montant</th>
+                    <th>Modifier statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    {% set badge = {
+                        'pending_payment': 'warning',
+                        'paid':            'info',
+                        'shipped':         'primary',
+                        'delivered':       'success',
+                        'cancelled':       'danger'
+                    } %}
+                    {% set label = {
+                        'pending_payment': 'En attente',
+                        'paid':            'Payé',
+                        'shipped':         'Expédié',
+                        'delivered':       'Livré',
+                        'cancelled':       'Annulé'
+                    } %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.user.email }}</td>
+                        <td>{{ order.createdAt|date('d/m/Y') }}</td>
+                        <td>
+                            <span class="badge bg-{{ badge[order.status] ?? 'secondary' }}">
+                                {{ label[order.status] ?? order.status }}
+                            </span>
+                        </td>
+                        <td>{{ order.totalAmount|number_format(2, ',', ' ') }} €</td>
+                        <td>
+                            <a href="{{ path('app_admin_order_status', {id: order.id}) }}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">Aucune commande enregistrée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-3">
+        <a href="{{ path('app_admin') }}" class="btn btn-primary">Retour</a>
+    </div>
+{% endblock %}

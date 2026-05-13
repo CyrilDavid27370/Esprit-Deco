@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le rôle - EspritDéco{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6">
+
+            <h2 class="text-center mb-4">Modifier le rôle</h2>
+
+            <p class="text-center text-muted mb-4">
+                Utilisateur : <strong>{{ user.email }}</strong>
+            </p>
+
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+
+            <div class="mb-3">
+                {{ form_label(form.role, 'Rôle', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.role, {'attr': {'class': 'form-select'}}) }}
+                {{ form_errors(form.role) }}
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+
+            {{ form_end(form) }}
+
+            <div class="text-center mt-3">
+                <a href="{{ path('app_admin_user_list') }}" class="btn btn-primary">Retour</a>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
