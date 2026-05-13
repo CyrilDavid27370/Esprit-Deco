@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 
@@ -66,7 +67,7 @@ class ProductRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findWithFilters(?int $categoryId, ?float $minPrice, ?float $maxPrice, ?string $search = null): array
+    public function findWithFilters(?int $categoryId, ?float $minPrice, ?float $maxPrice, ?string $search = null): QueryBuilder
     {
         $qb = $this->createQueryBuilder('p')
             ->leftJoin('p.category', 'c')
@@ -95,7 +96,7 @@ class ProductRepository extends ServiceEntityRepository
                ->setParameter('search', '%' . $search . '%');
         }
 
-        return $qb->getQuery()->getResult();
+        return $qb;
     }
 
 }
